@@ -1,0 +1,21 @@
+{
+    "activities": [
+      {
+        "id": 1,
+        "title": "Hiking Adventure",
+        "description": "Explore scenic trails in your area.",
+        "imageUrl": "/images/hiking.jpg",
+        "isBookmarked": false,
+        "category": "Outdoor"
+      },
+      {
+        "id": 2,
+        "title": "Cooking Class",
+        "description": "Learn to cook gourmet meals.",
+        "imageUrl": "/images/cooking.jpg",
+        "isBookmarked": true,
+        "category": "Education"
+      }
+    ]
+  }
+  

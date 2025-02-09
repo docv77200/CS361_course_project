@@ -1,0 +1,8 @@
+{{#extend 'main'}}
+
+{{#content 'body'}}
+<h1>{{activity.title}}</h1>
+<img src="{{activity.imageUrl}}" alt="Activity Image">
+<p>{{activity.description}}</p>
+<button id="bookmark-button">{{#if activity.isBookmarked}}Unbookmark{{else}}Bookmark{{/if}}</button>
+{{/content}}

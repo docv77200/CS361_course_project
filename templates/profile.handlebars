@@ -1,0 +1,10 @@
+{{#extend 'main'}}
+
+{{#content 'body'}}
+<h1>Your Profile</h1>
+<img src="{{profile.pictureUrl}}" alt="Profile Picture">
+<p>Name: {{profile.name}}</p>
+<p>Location: {{profile.location}}</p>
+<p>Interests: {{profile.interests}}</p>
+<button id="edit-profile-button">Edit Profile</button>
+{{/content}}
