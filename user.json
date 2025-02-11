@@ -4,6 +4,8 @@
       "username": "john_doe",
       "password": "pickles43",
       "hometown": "Springfield",
+      "securityQuestion": "pet",
+      "securityAnswerHash": "hashed_answer",
       "interests": ["outdoor", "food"],
       "bookmarkedActivities": [1]
     }

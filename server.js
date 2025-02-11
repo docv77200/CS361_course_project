@@ -89,6 +89,30 @@ app.post('/forgot-password', (req, res) => {
         res.render('forgot-password', { title: 'Forgot Password', error: 'Invalid username or security answer.' });
     }
 });
+app.post('/api/bookmark', (req, res) => {
+    const { username, activityId, action } = req.body;
+    const userData = loadUserData();
+
+    // Check if the user exists
+    if (userData.username !== username) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update bookmarks based on the action (add or remove)
+    if (action === 'add') {
+        if (!userData.bookmarkedActivities.includes(activityId)) {
+            userData.bookmarkedActivities.push(activityId);
+        }
+    } else if (action === 'remove') {
+        userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
+    }
+
+    // Save updated user data
+    saveUserData(userData);
+
+    res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
+});
+
 
 
 // Start the server
