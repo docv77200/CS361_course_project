@@ -1,0 +1,11 @@
+[
+    {
+      "id": 1,
+      "username": "john_doe",
+      "password": "pickles43",
+      "hometown": "Springfield",
+      "interests": ["outdoor", "food"],
+      "bookmarkedActivities": [1]
+    }
+  ]
+  

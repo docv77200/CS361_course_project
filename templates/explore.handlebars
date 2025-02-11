@@ -2,9 +2,22 @@
 
 {{#content 'body'}}
 <h1>Explore Activities</h1>
+
+<!-- Search and Filter Bar -->
 <div id="filter-bar">
     <input type="text" id="search" placeholder="Search activities...">
     <button id="filter-button">Apply Filters</button>
 </div>
-<div id="activity-grid"></div>
+
+<!-- Dynamic Activity Grid -->
+<div id="activity-grid">
+    {{#each activities}}
+        <div class="activity-card" data-category="{{this.category}}">
+            <h2>{{this.title}}</h2>
+            <p>{{this.description}}</p>
+            <button class="bookmark-btn" data-id="{{this.id}}">Bookmark</button>
+        </div>
+    {{/each}}
+</div>
+
 {{/content}}
