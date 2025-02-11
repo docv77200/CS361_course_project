@@ -46,7 +46,34 @@ app.post('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In', error: 'Invalid username or password.' });
 });
 
-// Password Reset Page (GET and POST)
+
+// Profile Setup Page (GET and POST)
+app.get('/profile', (req, res) => {
+    res.render('profilesetup', { title: 'Create an Account' });
+});
+
+app.post('/profile', (req, res) => {
+    const { username, password, securityQuestion, securityAnswer } = req.body;
+
+    // Simple validation
+    if (!username || !password || !securityQuestion || !securityAnswer) {
+        return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
+    }
+
+    // Save user data
+    const userData = {
+        username,
+        password,
+        securityQuestion,
+        securityAnswer
+    };
+
+    fs.writeFileSync(path.join(dataPath, 'user.json'), JSON.stringify(userData, null, 2));
+
+    res.redirect('/');
+});
+
+// Forgot Password Route (GET and POST)
 app.get('/forgot-password', (req, res) => {
     res.render('forgot-password', { title: 'Forgot Password' });
 });
@@ -55,38 +82,14 @@ app.post('/forgot-password', (req, res) => {
     const { username, securityAnswer } = req.body;
     const userData = loadUserData();
 
-    // Validate security answer
-    if (userData.username === username && userData.securityAnswers.includes(securityAnswer)) {
+    // Validate username and answer
+    if (userData.username === username && userData.securityAnswer === securityAnswer) {
         res.render('reset-password', { title: 'Reset Password' });
     } else {
-        res.render('forgot-password', { title: 'Forgot Password', error: 'Invalid username or answer.' });
+        res.render('forgot-password', { title: 'Forgot Password', error: 'Invalid username or security answer.' });
     }
 });
-// Profile Setup Page (GET and POST for creating an account)
-app.get('/profile', (req, res) => {
-    res.render('profilesetup', { title: 'Create an Account' });
-});
 
-app.post('/profile', (req, res) => {
-    const { username, password, securityAnswers } = req.body;
-
-    // Simple validation
-    if (!username || !password || !securityAnswers) {
-        return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
-    }
-
-    // Save user data (mock saving to JSON file)
-    const userData = {
-        username,
-        password,
-        securityAnswers: securityAnswers.split(',').map(answer => answer.trim())
-    };
-
-    fs.writeFileSync(path.join(dataPath, 'user.json'), JSON.stringify(userData, null, 2));
-
-    // Redirect to sign-in page after successful account creation
-    res.redirect('/');
-});
 
 // Start the server
 const PORT = process.env.PORT || 3001;

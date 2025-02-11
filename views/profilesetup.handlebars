@@ -2,17 +2,18 @@
 {{#if error}}
     <p class="error">{{error}}</p>
 {{/if}}
-<form id="create-account-form" action="/profile" method="POST">
+<form action="/profile" method="POST">
     <input type="text" name="username" placeholder="Username" required>
     <input type="password" name="password" placeholder="Password" required>
 
-    <label for="security-answers">Provide Answers for Security Questions (comma-separated):</label>
-    <ol>
-        <li>What was your first pet's name?</li>
-        <li>What's your middle name?</li>
-        <li>Where did you attend middle school?</li>
-    </ol>
-    <input type="text" name="securityAnswers" placeholder="Answer1, Answer2, Answer3" required>
+    <label for="security-question">Select a Security Question:</label>
+    <select name="securityQuestion" id="security-question" required>
+        <option value="pet">What was your first pet's name?</option>
+        <option value="middle-name">What's your middle name?</option>
+        <option value="middle-school">Where did you attend middle school?</option>
+    </select>
+
+    <input type="text" name="securityAnswer" placeholder="Answer to selected question" required>
 
     <button type="submit">Create Account</button>
 </form>
