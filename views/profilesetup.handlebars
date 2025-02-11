@@ -1,6 +1,20 @@
-<form action="/profile" method="POST">
-    <input type="text" name="name" placeholder="Name" required />
-    <input type="text" name="hometown" placeholder="Hometown" required />
-    <input type="text" name="interests" placeholder="Interests" required />
-    <button type="submit">Create Profile</button>
+<h1>Create an Account</h1>
+{{#if error}}
+    <p class="error">{{error}}</p>
+{{/if}}
+<form id="create-account-form" action="/profile" method="POST">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+
+    <label for="security-answers">Provide Answers for Security Questions (comma-separated):</label>
+    <ol>
+        <li>What was your first pet's name?</li>
+        <li>What's your middle name?</li>
+        <li>Where did you attend middle school?</li>
+    </ol>
+    <input type="text" name="securityAnswers" placeholder="Answer1, Answer2, Answer3" required>
+
+    <button type="submit">Create Account</button>
 </form>
+
+<p><a href="/">Already have an account? Sign in here.</a></p>

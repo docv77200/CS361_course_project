@@ -62,6 +62,31 @@ app.post('/forgot-password', (req, res) => {
         res.render('forgot-password', { title: 'Forgot Password', error: 'Invalid username or answer.' });
     }
 });
+// Profile Setup Page (GET and POST for creating an account)
+app.get('/profile', (req, res) => {
+    res.render('profilesetup', { title: 'Create an Account' });
+});
+
+app.post('/profile', (req, res) => {
+    const { username, password, securityAnswers } = req.body;
+
+    // Simple validation
+    if (!username || !password || !securityAnswers) {
+        return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
+    }
+
+    // Save user data (mock saving to JSON file)
+    const userData = {
+        username,
+        password,
+        securityAnswers: securityAnswers.split(',').map(answer => answer.trim())
+    };
+
+    fs.writeFileSync(path.join(dataPath, 'user.json'), JSON.stringify(userData, null, 2));
+
+    // Redirect to sign-in page after successful account creation
+    res.redirect('/');
+});
 
 // Start the server
 const PORT = process.env.PORT || 3001;
