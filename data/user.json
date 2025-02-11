@@ -1,13 +1,6 @@
-[
-    {
-      "id": 1,
-      "username": "john_doe",
-      "password": "pickles43",
-      "hometown": "Springfield",
-      "securityQuestion": "pet",
-      "securityAnswerHash": "hashed_answer",
-      "interests": ["outdoor", "food"],
-      "bookmarkedActivities": [1]
-    }
-  ]
-  
+{
+  "username": "drake",
+  "password": "purple",
+  "securityQuestion": "pet",
+  "securityAnswer": "milo"
+}

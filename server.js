@@ -40,7 +40,8 @@ app.post('/signin', (req, res) => {
 
     // Check if username and password match
     if (userData.username === username && userData.password === password) {
-        return res.redirect('/explore');  // Redirect to explore page upon successful login
+        return res.render('home', { title: 'Home', username: req.session.user.username });// Redirect to home page upon successful login
+        
     }
 
     res.render('signin', { title: 'Sign In', error: 'Invalid username or password.' });
