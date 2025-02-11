@@ -8,6 +8,13 @@ const app = express();
 const viewsPath = path.join(__dirname, 'views');
 const publicPath = path.join(__dirname, 'public');
 const dataPath = path.join(__dirname, 'data');
+const session = require('express-session');
+
+app.use(session({
+    secret: 'your-secret-key',  // Change this to a secure secret in production
+    resave: false,
+    saveUninitialized: true
+}));
 
 app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
 app.set('views', viewsPath);
@@ -16,6 +23,7 @@ app.set('view engine', 'handlebars');
 app.use(express.static(publicPath));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 // Mock data for user authentication and security questions
 function loadUserData() {
