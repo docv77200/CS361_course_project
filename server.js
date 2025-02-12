@@ -133,9 +133,16 @@ app.get('/home', (req, res) => {
     res.render('home', { title: 'Home', username: req.session.user.username });
 });
 
-// Load activity data
+
+// Load activity data with error handling
 function loadActivityData() {
-    return JSON.parse(fs.readFileSync(path.join(dataPath, 'activities.json'), 'utf-8'));
+    try {
+        const data = fs.readFileSync(path.join(dataPath, 'activities.json'), 'utf-8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('Error loading activities.json:', error);
+        return []; // Return an empty array if loading fails
+    }
 }
 
 // Explore Page Route
@@ -145,6 +152,7 @@ app.get('/explore', (req, res) => {
     }
 
     const activities = loadActivityData(); // Load all activities
+    console.log("Loaded Activities:", activities); // Debugging line to check if activities are being loaded
 
     res.render('explore', { 
         title: 'Explore Activities', 
