@@ -74,16 +74,24 @@ app.post('/signin', (req, res) => {
     res.render('signin', { title: 'Sign In', error: 'Invalid username or password.' });
 });
 
-// Profile Setup Page (GET and POST)
+// Profile Setup Page (GET)
+app.get('/profile', (req, res) => {
+    res.render('profilesetup', { title: 'Create an Account' });
+});
+
+// Profile Setup Page (POST)
 app.post('/profile', (req, res) => {
-    const { username, password, securityQuestion, securityAnswer, interests } = req.body;
+    const { username, password, securityQuestion, securityAnswer } = req.body;
+    let { interests } = req.body;
 
     if (!username || !password || !securityQuestion || !securityAnswer || !interests) {
         return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
     }
 
-    // Convert interests to an array (if only one is selected, it might be a string)
-    const selectedInterests = Array.isArray(interests) ? interests : [interests];
+    // Ensure interests is always an array
+    if (!Array.isArray(interests)) {
+        interests = [interests];
+    }
 
     // Save user data
     const userData = {
@@ -91,7 +99,7 @@ app.post('/profile', (req, res) => {
         password,
         securityQuestion,
         securityAnswer,
-        interests: selectedInterests, // Store interests array
+        interests, // Store interests array
         bookmarkedActivities: [] // Initialize bookmarks for the user
     };
 
@@ -99,7 +107,6 @@ app.post('/profile', (req, res) => {
 
     res.redirect('/');
 });
-
 
 // Forgot Password Route (GET and POST)
 app.get('/forgot-password', (req, res) => {
