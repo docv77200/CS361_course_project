@@ -147,37 +147,29 @@ app.get('/explore', (req, res) => {
     });
 });
 
-// API Route: Bookmark an Activity
-app.post('/api/bookmark', (req, res) => {
-    const { activityId, action } = req.body;
-    const userData = loadUserData();
-
+// API Route: Get Bookmarked Activities
+app.get('/api/get-bookmarks', (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
+    const userData = loadUserData();
     const username = req.session.user.username;
 
     if (!userData.username || userData.username !== username) {
         return res.status(404).json({ error: 'User not found' });
     }
 
-    if (!userData.bookmarkedActivities) {
-        userData.bookmarkedActivities = [];
+    // Ensure bookmarks exist
+    if (!userData.bookmarkedActivities || userData.bookmarkedActivities.length === 0) {
+        return res.status(200).json({ success: true, bookmarkedActivities: [] });
     }
 
-    if (action === 'add') {
-        if (!userData.bookmarkedActivities.includes(activityId)) {
-            userData.bookmarkedActivities.push(activityId);
-        }
-    } else if (action === 'remove') {
-        userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
-    } else {
-        return res.status(400).json({ error: 'Invalid action' });
-    }
+    // Get full activity details of bookmarked activities
+    const allActivities = loadActivityData();
+    const bookmarkedActivities = allActivities.filter(activity => userData.bookmarkedActivities.includes(activity.id));
 
-    saveUserData(userData);
-    res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
+    res.status(200).json({ success: true, bookmarkedActivities });
 });
 
 // Start the server

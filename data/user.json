@@ -1,9 +1,15 @@
 {
-  "username": "drake",
-  "password": "purple",
-  "securityQuestion": "pet",
-  "securityAnswer": "milo",
-  "city": "Los Angeles",
-  "interests": "outdoors", 
-  "bookmarkedActivities": []
+  "username": "jerry",
+  "password": "mullet",
+  "securityQuestion": "firstPet",
+  "securityAnswer": "turtle",
+  "interests": [
+    "outdoor",
+    "food & drink",
+    "tourist attraction",
+    "indoor"
+  ],
+  "bookmarkedActivities": [
+    ""
+  ]
 }
