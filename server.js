@@ -142,7 +142,7 @@ app.post('/api/bookmark', (req, res) => {
     saveUserData(userData);
 
     res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
-});
+
 // home route so only signed in users can access it
 app.get('/home', (req, res) => {
     if (!req.session.user) {
