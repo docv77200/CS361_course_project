@@ -1,16 +1,21 @@
 <h1>Explore Activities</h1>
 <div id="activity-grid">
-    {{#each activities}}
-        <div class="activity-card" data-id="{{this.id}}">
-            <h2>{{this.name}}</h2>
-            <p>{{this.description}}</p>
-            <p>Price: ${{this.price}}</p>
-            <p>Distance: {{this.distance}} miles</p>
-            <p>Type: {{this.type}}</p>
+    {{#if activities.length}}
+        {{#each activities}}
+            <div class="activity-card" data-id="{{this.id}}">
+                <h2>{{this.name}}</h2>
+                <p>{{this.description}}</p>
+                <p>Price: ${{this.price}}</p>
+                <p>Distance: {{this.distance}} miles</p>
+                <p>Type: {{this.type}}</p>
+                <p>Location: {{this.location}}</p>
 
-            <button class="bookmark-btn" data-id="{{this.id}}">
-                {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
-            </button>
-        </div> <!-- Closing div for activity-card -->
-    {{/each}}
+                <button class="bookmark-btn" data-id="{{this.id}}">
+                    {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
+                </button>
+            </div>
+        {{/each}}
+    {{else}}
+        <p>No activities available.</p>
+    {{/if}}
 </div>

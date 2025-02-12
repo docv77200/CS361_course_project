@@ -2,5 +2,7 @@
   "username": "drake",
   "password": "purple",
   "securityQuestion": "pet",
-  "securityAnswer": "milo"
+  "securityAnswer": "milo",
+  "city": "Los Angeles"
+  
 }

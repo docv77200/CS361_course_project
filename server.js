@@ -144,8 +144,13 @@ app.get('/explore', (req, res) => {
         return res.redirect('/'); // Redirect to sign-in if not logged in
     }
 
-    const activities = loadActivityData(); // Load activities from JSON file
-    res.render('explore', { title: 'Explore Activities', username: req.session.user.username, activities });
+    const activities = loadActivityData(); // Load all activities
+
+    res.render('explore', { 
+        title: 'Explore Activities', 
+        username: req.session.user.username, 
+        activities 
+    });
 });
 
 
