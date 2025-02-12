@@ -6,24 +6,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const activityId = button.dataset.id;
             const action = button.textContent.includes('Remove') ? 'remove' : 'add';
 
-            // Make an API request to update bookmarks
-            const response = await fetch('/api/bookmark', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: 'testuser',  // Replace with the logged-in user's username
-                    activityId,
-                    action
-                })
-            });
+            try {
+                const response = await fetch('/api/bookmark', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ activityId, action })
+                });
 
-            if (response.ok) {
                 const result = await response.json();
 
-                // Update button text dynamically
-                button.textContent = action === 'add' ? 'Remove Bookmark' : 'Bookmark';
-            } else {
-                alert('Failed to update bookmarks.');
+                if (result.success) {
+                    // Toggle button text dynamically
+                    button.textContent = action === 'add' ? 'Remove Bookmark' : 'Bookmark';
+                } else {
+                    alert(`Failed to update bookmarks: ${result.error}`);
+                }
+            } catch (error) {
+                alert('Error: Could not update bookmarks.');
+                console.error('Bookmarking error:', error);
             }
         });
     });

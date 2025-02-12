@@ -102,22 +102,41 @@ app.post('/forgot-password', (req, res) => {
     }
 });
 app.post('/api/bookmark', (req, res) => {
-    const { username, activityId, action } = req.body;
+    const { activityId, action } = req.body;
     const userData = loadUserData();
 
-    // Check if the user exists
-    if (userData.username !== username) {
+    // Ensure the user is logged in
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    // Find the user in the JSON file
+    const username = req.session.user.username;
+    if (!userData.username || userData.username !== username) {
         return res.status(404).json({ error: 'User not found' });
     }
 
-    // Update bookmarks based on the action (add or remove)
+    // Ensure the user's bookmark list exists
+    if (!userData.bookmarkedActivities) {
+        userData.bookmarkedActivities = [];
+    }
+
+    // Add or remove bookmarks based on action
     if (action === 'add') {
         if (!userData.bookmarkedActivities.includes(activityId)) {
             userData.bookmarkedActivities.push(activityId);
         }
     } else if (action === 'remove') {
         userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
+    } else {
+        return res.status(400).json({ error: 'Invalid action' });
     }
+
+    // Save updated user data
+    saveUserData(userData);
+
+    res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
+});
 
     // Save updated user data
     saveUserData(userData);
