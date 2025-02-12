@@ -20,6 +20,7 @@
             <p>Type: {{this.type}}</p>
             <p>Location: {{this.location}}</p>
 
+            <!-- Ensure data-id="{{this.id}}" is present -->
             <button class="bookmark-btn" data-id="{{this.id}}">
                 {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
             </button>
