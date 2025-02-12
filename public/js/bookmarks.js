@@ -8,7 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle bookmarking activities
     bookmarkButtons.forEach(button => {
         button.addEventListener('click', async () => {
-            const activityId = button.dataset.id;
+            const activityId = button.dataset.id;  // Ensure this gets a valid ID
+
+            if (!activityId) {
+                console.error('Error: Missing activity ID');
+                return alert('Error: Unable to bookmark this activity.');
+            }
+
             const action = button.textContent.includes('Remove') ? 'remove' : 'add';
 
             try {
@@ -42,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const result = await response.json();
+            console.log("Fetched Bookmarked Activities:", result.bookmarkedActivities);
 
             // Clear previous list
             bookmarkedList.innerHTML = '';
@@ -49,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success && result.bookmarkedActivities.length > 0) {
                 result.bookmarkedActivities.forEach(activity => {
                     const li = document.createElement('li');
-                    li.textContent = `${activity.name} - ${activity.type}`;
+                    li.innerHTML = `<strong>${activity.name}</strong> - ${activity.type}`;
                     bookmarkedList.appendChild(li);
                 });
             } else {
