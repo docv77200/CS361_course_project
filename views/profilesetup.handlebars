@@ -1,21 +1,28 @@
-<h1>Create an Account</h1>
-{{#if error}}
-    <p class="error">{{error}}</p>
-{{/if}}
+<h1>Create Your Profile</h1>
 <form action="/profile" method="POST">
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
+    <label for="username">Username:</label>
+    <input type="text" name="username" required>
 
-    <label for="security-question">Select a Security Question:</label>
-    <select name="securityQuestion" id="security-question" required>
-        <option value="pet">What was your first pet's name?</option>
-        <option value="middle-name">What's your middle name?</option>
-        <option value="middle-school">Where did you attend middle school?</option>
+    <label for="password">Password:</label>
+    <input type="password" name="password" required>
+
+    <label for="securityQuestion">Choose a Security Question:</label>
+    <select name="securityQuestion" required>
+        <option value="firstPet">What was your first pet?</option>
+        <option value="middleName">What is your middle name?</option>
+        <option value="middleSchool">Where did you attend middle school?</option>
     </select>
 
-    <input type="text" name="securityAnswer" placeholder="Answer to selected question" required>
+    <label for="securityAnswer">Answer:</label>
+    <input type="text" name="securityAnswer" required>
 
-    <button type="submit">Create Account</button>
+    <h3>Select Your Interests</h3>
+    <div>
+        <input type="checkbox" name="interests" value="outdoor"> Outdoor
+        <input type="checkbox" name="interests" value="food & drink"> Food & Drink
+        <input type="checkbox" name="interests" value="tourist attraction"> Tourist Attractions
+        <input type="checkbox" name="interests" value="indoor"> Indoor
+    </div>
+
+    <button type="submit">Create Profile</button>
 </form>
-
-<p><a href="/">Already have an account? Sign in here.</a></p>

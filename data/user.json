@@ -3,6 +3,7 @@
   "password": "purple",
   "securityQuestion": "pet",
   "securityAnswer": "milo",
-  "city": "Los Angeles"
-  
+  "city": "Los Angeles",
+  "interests": "outdoors", 
+  "bookmarkedActivities": []
 }
