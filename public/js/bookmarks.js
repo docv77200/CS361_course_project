@@ -1,15 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const bookmarkButtons = document.querySelectorAll('.bookmark-btn');
     const viewBookmarksBtn = document.getElementById('view-bookmarks-btn');
     const bookmarkModal = document.getElementById('bookmark-modal');
     const bookmarkedList = document.getElementById('bookmarked-list');
     const closeModalBtn = document.querySelector('.close-btn');
 
-    // Fetch and display bookmarked activities when the button is clicked
+    // Handle bookmarking activities
+    bookmarkButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const activityId = button.dataset.id;
+            const action = button.textContent.includes('Remove') ? 'remove' : 'add';
+
+            try {
+                const response = await fetch('/api/bookmark', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ activityId, action })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    button.textContent = action === 'add' ? 'Remove Bookmark' : 'Bookmark';
+                } else {
+                    alert(`Failed to update bookmarks: ${result.error}`);
+                }
+            } catch (error) {
+                alert('Error: Could not update bookmarks.');
+                console.error('Bookmarking error:', error);
+            }
+        });
+    });
+
+    // Fetch and display bookmarked activities when "View Bookmarked Activities" is clicked
     viewBookmarksBtn.addEventListener('click', async () => {
         try {
             const response = await fetch('/api/get-bookmarks', { method: 'GET' });
 
-            // Ensure response is OK and is JSON
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

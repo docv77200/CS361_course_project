@@ -147,7 +147,38 @@ app.get('/explore', (req, res) => {
     });
 });
 
-// API Route: Get Bookmarked Activities
+
+app.post('/api/bookmark', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    const { activityId, action } = req.body;
+    const userData = loadUserData();
+    const username = req.session.user.username;
+
+    if (!userData.username || userData.username !== username) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Ensure the user's bookmarkedActivities exists
+    if (!Array.isArray(userData.bookmarkedActivities)) {
+        userData.bookmarkedActivities = [];
+    }
+
+    if (action === 'add') {
+        if (!userData.bookmarkedActivities.includes(activityId)) {
+            userData.bookmarkedActivities.push(activityId);
+        }
+    } else if (action === 'remove') {
+        userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
+    } else {
+        return res.status(400).json({ error: 'Invalid action' });
+    }
+
+    saveUserData(userData);
+    res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
+});
 app.get('/api/get-bookmarks', (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'User not authenticated' });
@@ -160,17 +191,21 @@ app.get('/api/get-bookmarks', (req, res) => {
         return res.status(404).json({ error: 'User not found' });
     }
 
-    // Ensure bookmarks exist
+    // If user has no bookmarked activities, return an empty array
     if (!userData.bookmarkedActivities || userData.bookmarkedActivities.length === 0) {
         return res.status(200).json({ success: true, bookmarkedActivities: [] });
     }
 
-    // Get full activity details of bookmarked activities
+    // Load all activities and filter those that match bookmarked IDs
     const allActivities = loadActivityData();
-    const bookmarkedActivities = allActivities.filter(activity => userData.bookmarkedActivities.includes(activity.id));
+    const bookmarkedActivities = allActivities.filter(activity => 
+        userData.bookmarkedActivities.includes(activity.id)
+    );
 
     res.status(200).json({ success: true, bookmarkedActivities });
 });
+
+
 
 // Start the server
 const PORT = process.env.PORT || 3001;
