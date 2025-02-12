@@ -1,78 +1,85 @@
 {
     "activities": [
-      
-      {
-        "name": "Santa Monica Pier Carnival",
-        "description": "Enjoy classic carnival rides, games, and food at the famous Santa Monica Pier.",
-        "price": 25,
-        "distance": 5.2,
-        "type": "outdoor",
-        "location": "Los Angeles"
-    },
-    {
-        "name": "Hollywood Walk of Fame Tour",
-        "description": "Explore the stars on the Hollywood Walk of Fame and visit iconic spots like Grauman's Chinese Theatre.",
-        "price": 0,
-        "distance": 3.0,
-        "type": "tourist attraction",
-        "location": "Los Angeles"
-    },
-    {
-        "name": "Griffith Observatory Stargazing",
-        "description": "Take in breathtaking views of the stars and the LA skyline from Griffith Observatory.",
-        "price": 0,
-        "distance": 4.8,
-        "type": "outdoor",
-        "location": "Los Angeles"
-    },
-    {
-        "name": "Seattle Great Wheel",
-        "description": "Ride the famous Ferris wheel at the waterfront and enjoy stunning views of Seattle.",
-        "price": 15,
-        "distance": 1.2,
-        "type": "outdoor",
-        "location": "Seattle"
-    },
-    {
-        "name": "Pike Place Market Food Tour",
-        "description": "Discover Seattle's food scene with a guided tasting tour of Pike Place Market.",
-        "price": 45,
-        "distance": 0.5,
-        "type": "food & drink",
-        "location": "Seattle"
-    },
-    {
-        "name": "Museum of Pop Culture",
-        "description": "Explore exhibits on music, sci-fi, and gaming at Seattle’s unique Museum of Pop Culture.",
-        "price": 30,
-        "distance": 2.0,
-        "type": "indoor",
-        "location": "Seattle"
-    },
-    {
-        "name": "Portland Japanese Garden",
-        "description": "Experience peace and beauty at the world-renowned Portland Japanese Garden.",
-        "price": 20,
-        "distance": 3.3,
-        "type": "outdoor",
-        "location": "Portland"
-    },
-    {
-        "name": "Voodoo Doughnut Tasting",
-        "description": "Try some of Portland’s most famous and creative doughnuts at Voodoo Doughnut.",
-        "price": 5,
-        "distance": 1.0,
-        "type": "food & drink",
-        "location": "Portland"
-    },
-    {
-        "name": "Powell's City of Books Visit",
-        "description": "Explore the largest independent bookstore in the world, Powell's City of Books.",
-        "price": 0,
-        "distance": 0.8,
-        "type": "indoor",
-        "location": "Portland"
-    }
+        {
+            "id": "santa-monica-pier",
+            "name": "Santa Monica Pier Carnival",
+            "description": "Enjoy classic carnival rides, games, and food at the famous Santa Monica Pier.",
+            "price": 25,
+            "distance": 5.2,
+            "type": "outdoor",
+            "location": "Los Angeles"
+        },
+        {
+            "id": "hollywood-walk-of-fame",
+            "name": "Hollywood Walk of Fame Tour",
+            "description": "Explore the stars on the Hollywood Walk of Fame and visit iconic spots like Grauman's Chinese Theatre.",
+            "price": 0,
+            "distance": 3.0,
+            "type": "tourist attraction",
+            "location": "Los Angeles"
+        },
+        {
+            "id": "griffith-observatory",
+            "name": "Griffith Observatory Stargazing",
+            "description": "Take in breathtaking views of the stars and the LA skyline from Griffith Observatory.",
+            "price": 0,
+            "distance": 4.8,
+            "type": "outdoor",
+            "location": "Los Angeles"
+        },
+        {
+            "id": "seattle-great-wheel",
+            "name": "Seattle Great Wheel",
+            "description": "Ride the famous Ferris wheel at the waterfront and enjoy stunning views of Seattle.",
+            "price": 15,
+            "distance": 1.2,
+            "type": "outdoor",
+            "location": "Seattle"
+        },
+        {
+            "id": "pike-place-market-tour",
+            "name": "Pike Place Market Food Tour",
+            "description": "Discover Seattle's food scene with a guided tasting tour of Pike Place Market.",
+            "price": 45,
+            "distance": 0.5,
+            "type": "food & drink",
+            "location": "Seattle"
+        },
+        {
+            "id": "museum-of-pop-culture",
+            "name": "Museum of Pop Culture",
+            "description": "Explore exhibits on music, sci-fi, and gaming at Seattle’s unique Museum of Pop Culture.",
+            "price": 30,
+            "distance": 2.0,
+            "type": "indoor",
+            "location": "Seattle"
+        },
+        {
+            "id": "portland-japanese-garden",
+            "name": "Portland Japanese Garden",
+            "description": "Experience peace and beauty at the world-renowned Portland Japanese Garden.",
+            "price": 20,
+            "distance": 3.3,
+            "type": "outdoor",
+            "location": "Portland"
+        },
+        {
+            "id": "voodoo-doughnut",
+            "name": "Voodoo Doughnut Tasting",
+            "description": "Try some of Portland’s most famous and creative doughnuts at Voodoo Doughnut.",
+            "price": 5,
+            "distance": 1.0,
+            "type": "food & drink",
+            "location": "Portland"
+        },
+        {
+            "id": "powells-city-of-books",
+            "name": "Powell's City of Books Visit",
+            "description": "Explore the largest independent bookstore in the world, Powell's City of Books.",
+            "price": 0,
+            "distance": 0.8,
+            "type": "indoor",
+            "location": "Portland"
+        }
     ]
-  }
-  
+}
