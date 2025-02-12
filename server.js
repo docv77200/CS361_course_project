@@ -48,8 +48,11 @@ app.post('/signin', (req, res) => {
 
     // Check if username and password match
     if (userData.username === username && userData.password === password) {
-        return res.render('home', { title: 'Home', username: req.session.user.username });// Redirect to home page upon successful login
-        
+        // Store user data in the session
+        req.session.user = { username: userData.username };
+
+        // Redirect to home page with username
+        return res.render('home', { title: 'Home', username: req.session.user.username });
     }
 
     res.render('signin', { title: 'Sign In', error: 'Invalid username or password.' });
@@ -121,6 +124,15 @@ app.post('/api/bookmark', (req, res) => {
 
     res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
 });
+// home route so only signed in users can access it
+app.get('/home', (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/'); // Redirect to sign-in if not logged in
+    }
+
+    res.render('home', { title: 'Home', username: req.session.user.username });
+});
+
 
 
 
