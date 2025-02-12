@@ -151,13 +151,15 @@ app.get('/explore', (req, res) => {
         return res.redirect('/'); // Redirect to sign-in if not logged in
     }
 
-    const activities = loadActivityData(); // Load all activities
-    console.log("Loaded Activities:", activities); // Debugging line to check if activities are being loaded
+    const activitiesData = loadActivityData(); // Load all activities
+    const activities = activitiesData.activities; // Extract activities array
+
+    console.log("Final Activities Sent to Handlebars:", activities); // Debugging output
 
     res.render('explore', { 
         title: 'Explore Activities', 
         username: req.session.user.username, 
-        activities 
+        activities // Pass activities directly
     });
 });
 
