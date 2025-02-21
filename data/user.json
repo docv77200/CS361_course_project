@@ -4,8 +4,10 @@
   "securityQuestion": "firstPet",
   "securityAnswer": "milo",
   "interests": [
+    "outdoor",
     "food & drink",
-    "tourist attraction"
+    "tourist attraction",
+    "indoor"
   ],
   "bookmarkedActivities": []
 }

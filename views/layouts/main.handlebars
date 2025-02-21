@@ -2,11 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    {{{body}}}
+
+    {{#if user}}
+    <nav class="navbar">
+        <a href="/home" class="home-button">🏠 Home</a>
+    </nav>
+    {{/if}}
+
+    <!-- Main content area -->
+    <main>
+        {{{body}}}
+    </main>
 
     <!-- Include JavaScript files -->
     <script src="/js/index.js"></script>
