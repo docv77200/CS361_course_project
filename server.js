@@ -6,14 +6,13 @@ const session = require('express-session');
 
 const app = express();
 
-// Define paths
 const viewsPath = path.join(__dirname, 'views');
 const publicPath = path.join(__dirname, 'public');
 const dataPath = path.join(__dirname, 'data');
 
 // Session setup
 app.use(session({
-    secret: 'your-secret-key', // Change this to a secure secret in production
+    secret: 'your-secret-key',  // Change this to a secure secret in production
     resave: false,
     saveUninitialized: true
 }));
@@ -24,89 +23,96 @@ app.set('views', viewsPath);
 app.set('view engine', 'handlebars');
 
 // Middleware
-app.use(express.static(publicPath));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.static(publicPath)); // Serve static files (JS, CSS, Images)
+app.use(express.json()); // Enable JSON body parsing
+app.use(express.urlencoded({ extended: true })); // Enable URL-encoded form parsing
 
-// Helper functions to load and save user data
+// Load user data
 function loadUserData() {
     try {
         return JSON.parse(fs.readFileSync(path.join(dataPath, 'user.json'), 'utf-8'));
     } catch (error) {
         console.error('Error loading user.json:', error);
-        return {}; // Return empty object if file is missing or corrupt
+        return {}; // Return empty object if loading fails
     }
 }
 
+// Save user data
 function saveUserData(data) {
     fs.writeFileSync(path.join(dataPath, 'user.json'), JSON.stringify(data, null, 2));
 }
 
+// Load activity data
 function loadActivityData() {
     try {
         return JSON.parse(fs.readFileSync(path.join(dataPath, 'activities.json'), 'utf-8')).activities;
     } catch (error) {
         console.error('Error loading activities.json:', error);
-        return [];
+        return []; // Return empty array if loading fails
     }
 }
 
-// ---------------------- Routes ---------------------- //
+// Routes
 
-// Default route - Sign-in page
+// Default route - Display the Sign-in page
 app.get('/', (req, res) => {
     res.render('signin', { title: 'Sign In' });
 });
 
-// Handle Sign-in
+// Handle Sign-in POST request
 app.post('/signin', (req, res) => {
     const { username, password } = req.body;
     const userData = loadUserData();
 
     if (userData.username === username && userData.password === password) {
         req.session.user = { username: userData.username };
+
+        // Redirect to home page upon successful login
         return res.redirect('/home');
     }
 
     res.render('signin', { title: 'Sign In', error: 'Invalid username or password.' });
 });
 
-// Profile Setup (GET)
+// Profile Setup Page (GET)
 app.get('/profile', (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/');
-    }
-    res.render('profilesetup', { title: 'Create an Account', user: req.session.user });
+    res.render('profilesetup', { title: 'Create an Account' });
 });
 
-// Profile Setup (POST)
+// Profile Setup Page (POST)
 app.post('/profile', (req, res) => {
-    const { username, password, securityQuestion, securityAnswer, interests } = req.body;
-    let userInterests = Array.isArray(interests) ? interests : [interests];
+    const { username, password, securityQuestion, securityAnswer } = req.body;
+    let { interests } = req.body;
 
-    if (!username || !password || !securityQuestion || !securityAnswer || !userInterests) {
+    if (!username || !password || !securityQuestion || !securityAnswer || !interests) {
         return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
     }
 
+    // Ensure interests is always an array
+    if (!Array.isArray(interests)) {
+        interests = [interests];
+    }
+
+    // Save user data
     const userData = {
         username,
         password,
         securityQuestion,
         securityAnswer,
-        interests: userInterests,
-        bookmarkedActivities: []
+        interests, // Store interests array
+        bookmarkedActivities: [] // Initialize bookmarks for the user
     };
 
     saveUserData(userData);
+
     res.redirect('/');
 });
 
-// Forgot Password (GET)
+// Forgot Password Route (GET and POST)
 app.get('/forgot-password', (req, res) => {
     res.render('forgot-password', { title: 'Forgot Password' });
 });
 
-// Forgot Password (POST)
 app.post('/forgot-password', (req, res) => {
     const { username, securityAnswer } = req.body;
     const userData = loadUserData();
@@ -118,24 +124,30 @@ app.post('/forgot-password', (req, res) => {
     }
 });
 
-// Home Page - Requires Login
+// Home Route - Only signed-in users can access it
 app.get('/home', (req, res) => {
     if (!req.session.user) {
-        return res.redirect('/');
+        return res.redirect('/'); // Redirect to sign-in if not logged in
     }
-    res.render('home', { title: 'Home', user: req.session.user });
+
+    res.render('home', { title: 'Home', username: req.session.user.username });
 });
 
-// Explore Page - Display all activities
+// Explore Page Route - Display all activities
 app.get('/explore', (req, res) => {
     if (!req.session.user) {
-        return res.redirect('/');
+        return res.redirect('/'); // Redirect to sign-in if not logged in
     }
-    const activities = loadActivityData();
-    res.render('explore', { title: 'Explore Activities', user: req.session.user, activities });
+
+    const activities = loadActivityData(); // Load all activities
+    res.render('explore', { 
+        title: 'Explore Activities', 
+        username: req.session.user.username, 
+        activities 
+    });
 });
 
-// Bookmark an Activity (POST)
+
 app.post('/api/bookmark', (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'User not authenticated' });
@@ -149,6 +161,7 @@ app.post('/api/bookmark', (req, res) => {
         return res.status(404).json({ error: 'User not found' });
     }
 
+    // Ensure the user's bookmarkedActivities exists
     if (!Array.isArray(userData.bookmarkedActivities)) {
         userData.bookmarkedActivities = [];
     }
@@ -166,8 +179,6 @@ app.post('/api/bookmark', (req, res) => {
     saveUserData(userData);
     res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
 });
-
-// Get Bookmarked Activities (GET)
 app.get('/api/get-bookmarks', (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'User not authenticated' });
@@ -180,24 +191,22 @@ app.get('/api/get-bookmarks', (req, res) => {
         return res.status(404).json({ error: 'User not found' });
     }
 
+    // If user has no bookmarked activities, return an empty array
     if (!userData.bookmarkedActivities || userData.bookmarkedActivities.length === 0) {
         return res.status(200).json({ success: true, bookmarkedActivities: [] });
     }
 
+    // Load all activities and filter those that match bookmarked IDs
     const allActivities = loadActivityData();
-    const bookmarkedActivities = allActivities.filter(activity =>
+    const bookmarkedActivities = allActivities.filter(activity => 
         userData.bookmarkedActivities.includes(activity.id)
     );
 
     res.status(200).json({ success: true, bookmarkedActivities });
 });
 
-// Logout Route (Optional)
-app.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
-});
+
 
 // Start the server
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
