@@ -7,6 +7,8 @@
             "price": 25,
             "distance": 5.2,
             "type": "outdoor",
+            "date": "March 15, 2024",
+            "time": "12:00 PM - 10:00 PM",
             "location": "Los Angeles"
         },
         {
@@ -16,6 +18,8 @@
             "price": 0,
             "distance": 3.0,
             "type": "tourist attraction",
+            "date": "Available Year-Round",
+            "time": "9:00 AM - 6:00 PM",
             "location": "Los Angeles"
         },
         {
@@ -25,6 +29,8 @@
             "price": 0,
             "distance": 4.8,
             "type": "outdoor",
+            "date": "March 22, 2024",
+            "time": "6:00 PM - 12:00 AM",
             "location": "Los Angeles"
         },
         {
@@ -34,6 +40,8 @@
             "price": 15,
             "distance": 1.2,
             "type": "outdoor",
+            "date": "Available Year-Round",
+            "time": "11:00 AM - 10:00 PM",
             "location": "Seattle"
         },
         {
@@ -43,6 +51,8 @@
             "price": 45,
             "distance": 0.5,
             "type": "food & drink",
+            "date": "March 20, 2024",
+            "time": "10:00 AM - 4:00 PM",
             "location": "Seattle"
         },
         {
@@ -52,6 +62,8 @@
             "price": 30,
             "distance": 2.0,
             "type": "indoor",
+            "date": "Available Year-Round",
+            "time": "10:00 AM - 6:00 PM",
             "location": "Seattle"
         },
         {
@@ -61,6 +73,8 @@
             "price": 20,
             "distance": 3.3,
             "type": "outdoor",
+            "date": "March 18, 2024",
+            "time": "9:00 AM - 7:00 PM",
             "location": "Portland"
         },
         {
@@ -70,6 +84,8 @@
             "price": 5,
             "distance": 1.0,
             "type": "food & drink",
+            "date": "Open 24/7",
+            "time": "Open 24 Hours",
             "location": "Portland"
         },
         {
@@ -79,6 +95,8 @@
             "price": 0,
             "distance": 0.8,
             "type": "indoor",
+            "date": "Available Year-Round",
+            "time": "10:00 AM - 9:00 PM",
             "location": "Portland"
         }
     ]
