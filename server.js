@@ -42,16 +42,6 @@ function saveUserData(data) {
     fs.writeFileSync(path.join(dataPath, 'user.json'), JSON.stringify(data, null, 2));
 }
 
-// Load activity data
-function loadActivityData() {
-    try {
-        return JSON.parse(fs.readFileSync(path.join(dataPath, 'activities.json'), 'utf-8')).activities;
-    } catch (error) {
-        console.error('Error loading activities.json:', error);
-        return [];
-    }
-}
-
 // ---------------------- Routes ---------------------- //
 
 // Default route - Sign-in page
@@ -89,12 +79,67 @@ app.get('/explore', (req, res) => {
     res.render('explore', { title: 'Explore Activities', user: req.session.user, activities });
 });
 
-// Profile Page
+// Profile Setup Page (GET)
 app.get('/profile', (req, res) => {
-    if (!req.session.user) {
+    res.render('profilesetup', { title: 'Create an Account' });
+});
+
+// Profile Setup (POST) - Create an account
+app.post('/profile', (req, res) => {
+    const { username, password, securityQuestion, securityAnswer, interests } = req.body;
+    let userInterests = Array.isArray(interests) ? interests : [interests];
+
+    if (!username || !password || !securityQuestion || !securityAnswer || !userInterests) {
+        return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
+    }
+
+    const newUser = {
+        username,
+        password,
+        securityQuestion,
+        securityAnswer,
+        interests: userInterests,
+        bookmarkedActivities: []
+    };
+
+    saveUserData(newUser);
+    res.redirect('/');
+});
+
+// Forgot Password (GET)
+app.get('/forgot-password', (req, res) => {
+    res.render('forgot-password', { title: 'Forgot Password' });
+});
+
+// Forgot Password (POST)
+app.post('/forgot-password', (req, res) => {
+    const { username, securityAnswer } = req.body;
+    const userData = loadUserData();
+
+    if (userData.username === username && userData.securityAnswer === securityAnswer) {
+        res.render('reset-password', { title: 'Reset Password', user: username });
+    } else {
+        res.render('forgot-password', { title: 'Forgot Password', error: 'Invalid username or security answer.' });
+    }
+});
+
+// Reset Password Page (GET)
+app.get('/reset-password', (req, res) => {
+    res.render('reset-password', { title: 'Reset Password' });
+});
+
+// Reset Password (POST)
+app.post('/reset-password', (req, res) => {
+    const { username, newPassword } = req.body;
+    let userData = loadUserData();
+
+    if (userData.username === username) {
+        userData.password = newPassword;
+        saveUserData(userData);
         return res.redirect('/');
     }
-    res.render('profile', { title: 'Profile', user: req.session.user });
+
+    res.render('reset-password', { title: 'Reset Password', error: 'Username not found.' });
 });
 
 // Activity Details Page
@@ -118,6 +163,16 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 });
+
+// Helper function to load activity data
+function loadActivityData() {
+    try {
+        return JSON.parse(fs.readFileSync(path.join(dataPath, 'activities.json'), 'utf-8')).activities;
+    } catch (error) {
+        console.error('Error loading activities.json:', error);
+        return [];
+    }
+}
 
 // Start the server
 const PORT = process.env.PORT || 3001;
