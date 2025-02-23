@@ -72,6 +72,18 @@ p {
     margin-top: 15px;
     color: white
 }
+/* Improve visibility of links */
+a {
+    color: white; /* Set link color to white */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold;
+}
+
+a:hover {
+    color: #FFD700; /* Change to gold on hover for better visibility */
+    text-decoration: underline; /* Add underline on hover */
+}
+
 
 
 /* Navigation */
