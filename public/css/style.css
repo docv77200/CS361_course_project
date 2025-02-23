@@ -151,4 +151,34 @@ input[type="text"], input[type="password"] {
     visibility: visible;
     opacity: 1;
 }
+/* Tooltip Container for Forgot Password */
+.forgot-password-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Tooltip Text */
+.forgot-password-tooltip {
+    visibility: hidden;
+    width: 220px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+/* Show Tooltip on Hover */
+.forgot-password-container:hover .forgot-password-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
 
