@@ -174,6 +174,64 @@ function loadActivityData() {
     }
 }
 
+// Bookmark an Activity (POST)
+app.post('/api/bookmark', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    const { activityId, action } = req.body;
+    const userData = loadUserData();
+    const username = req.session.user.username;
+
+    if (!userData.username || userData.username !== username) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (!Array.isArray(userData.bookmarkedActivities)) {
+        userData.bookmarkedActivities = [];
+    }
+
+    if (action === 'add') {
+        if (!userData.bookmarkedActivities.includes(activityId)) {
+            userData.bookmarkedActivities.push(activityId);
+        }
+    } else if (action === 'remove') {
+        userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
+    } else {
+        return res.status(400).json({ error: 'Invalid action' });
+    }
+
+    saveUserData(userData);
+    res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
+});
+
+// Get Bookmarked Activities (GET)
+app.get('/api/get-bookmarks', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    const userData = loadUserData();
+    const username = req.session.user.username;
+
+    if (!userData.username || userData.username !== username) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (!userData.bookmarkedActivities || userData.bookmarkedActivities.length === 0) {
+        return res.status(200).json({ success: true, bookmarkedActivities: [] });
+    }
+
+    const allActivities = loadActivityData();
+    const bookmarkedActivities = allActivities.filter(activity =>
+        userData.bookmarkedActivities.includes(activity.id)
+    );
+
+    res.status(200).json({ success: true, bookmarkedActivities });
+});
+
+
 // Start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
