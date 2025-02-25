@@ -1,15 +1,11 @@
 {
   "username": "drake",
   "password": "vickers",
-  "securityQuestion": "firstPet",
-  "securityAnswer": "milo",
+  "securityQuestion": "middleName",
+  "securityAnswer": "riley",
+  "city": "Portland",
   "interests": [
-    "outdoor",
-    "food & drink",
-    "tourist attraction",
-    "indoor"
+    "tourist attraction"
   ],
-  "bookmarkedActivities": [
-    "santa-monica-pier"
-  ]
+  "bookmarkedActivities": []
 }

@@ -22,13 +22,9 @@
             <p>Date: {{this.date}}</p>
             <p>Location: {{this.location}}</p>
 
-            <!-- Bookmark Button with Tooltip -->
-            <div class="bookmark-container">
-                <button class="bookmark-btn" data-id="{{this.id}}">
-                    {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
-                </button>
-                <span class="tooltip">Bookmark this activity for later</span>
-            </div>
+            <button class="bookmark-btn" data-id="{{this.id}}">
+                {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
+            </button>
         </div>
     {{/each}}
 </div>

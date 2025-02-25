@@ -3,6 +3,8 @@ const exphbs = require('express-handlebars');
 const fs = require('fs');
 const path = require('path');
 const session = require('express-session');
+const { getRecommendedActivities } = require('./recommendationService'); // Import microservice
+
 
 const app = express();
 
@@ -70,13 +72,14 @@ app.get('/home', (req, res) => {
     res.render('home', { title: 'Home', user: req.session.user });
 });
 
-// Explore Page - Display all activities
+// Route: Explore Page (Uses Recommendation Microservice)
 app.get('/explore', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/');
     }
-    const activities = loadActivityData();
-    res.render('explore', { title: 'Explore Activities', user: req.session.user, activities });
+
+    const sortedActivities = getRecommendedActivities();
+    res.render('explore', { title: 'Explore Activities', user: req.session.user, activities: sortedActivities });
 });
 
 // Profile Setup Page (GET)
