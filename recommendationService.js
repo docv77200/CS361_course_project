@@ -3,7 +3,7 @@ const path = require('path');
 
 const dataPath = path.join(__dirname, 'data');
 
-// Function to load user data
+// Load user data function
 function loadUserData() {
     try {
         return JSON.parse(fs.readFileSync(path.join(dataPath, 'user.json'), 'utf-8'));
@@ -13,7 +13,7 @@ function loadUserData() {
     }
 }
 
-// Function to load activities data
+// Load activity data function
 function loadActivityData() {
     try {
         return JSON.parse(fs.readFileSync(path.join(dataPath, 'activities.json'), 'utf-8')).activities;
@@ -23,7 +23,7 @@ function loadActivityData() {
     }
 }
 
-// Function to generate recommendations based on interests & location
+// Generate recommendations based on interests & location
 function getRecommendedActivities() {
     const user = loadUserData();
     if (!user) return [];
@@ -32,12 +32,17 @@ function getRecommendedActivities() {
     const userInterests = user.interests || [];
     const userLocation = user.city || "";
 
+    console.log("🔍 User Interests:", userInterests);
+    console.log("🏙️ User Location:", userLocation);
+
     // Sorting activities based on relevance
     const sortedActivities = allActivities.sort((a, b) => {
         const aMatchesInterest = userInterests.includes(a.type);
         const bMatchesInterest = userInterests.includes(b.type);
         const aMatchesLocation = a.location === userLocation;
         const bMatchesLocation = b.location === userLocation;
+
+        console.log(`Checking activity: ${a.name} - Interest: ${aMatchesInterest}, Location: ${aMatchesLocation}`);
 
         // Priority logic
         if (aMatchesInterest && aMatchesLocation && !(bMatchesInterest && bMatchesLocation)) return -1;
@@ -52,6 +57,7 @@ function getRecommendedActivities() {
         return 0;
     });
 
+    console.log("✅ Sorted Activities:", sortedActivities);
     return sortedActivities;
 }
 

@@ -72,15 +72,21 @@ app.get('/home', (req, res) => {
     res.render('home', { title: 'Home', user: req.session.user });
 });
 
-// Route: Explore Page (Uses Recommendation Microservice)
 app.get('/explore', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/');
     }
 
     const sortedActivities = getRecommendedActivities();
-    res.render('explore', { title: 'Explore Activities', user: req.session.user, activities: sortedActivities });
+    console.log("🚀 Sending sorted activities to Explore Page");
+
+    res.render('explore', { 
+        title: 'Explore Activities', 
+        user: req.session.user, 
+        activities: sortedActivities 
+    });
 });
+
 
 // Profile Setup Page (GET)
 app.get('/profile', (req, res) => {
