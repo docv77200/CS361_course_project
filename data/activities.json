@@ -98,6 +98,72 @@
             "date": "Available Year-Round",
             "time": "10:00 AM - 9:00 PM",
             "location": "Portland"
+        },
+        {
+            "id": "golden-gate-bridge-walk",
+            "name": "Golden Gate Bridge Walk",
+            "description": "Take a scenic walk across the world-famous Golden Gate Bridge.",
+            "price": 0,
+            "distance": 1.7,
+            "type": "outdoor",
+            "date": "Available Year-Round",
+            "time": "6:00 AM - 9:00 PM",
+            "location": "San Francisco"
+        },
+        {
+            "id": "alcatraz-tour",
+            "name": "Alcatraz Island Tour",
+            "description": "Tour the historic Alcatraz prison and explore its fascinating history.",
+            "price": 40,
+            "distance": 2.0,
+            "type": "tourist attraction",
+            "date": "March 25, 2024",
+            "time": "10:00 AM - 6:00 PM",
+            "location": "San Francisco"
+        },
+        {
+            "id": "san-diego-zoo",
+            "name": "San Diego Zoo",
+            "description": "Visit one of the world's most famous zoos and see incredible wildlife.",
+            "price": 60,
+            "distance": 4.0,
+            "type": "outdoor",
+            "date": "Available Year-Round",
+            "time": "9:00 AM - 5:00 PM",
+            "location": "San Diego"
+        },
+        {
+            "id": "la-jolla-cove-snorkeling",
+            "name": "La Jolla Cove Snorkeling",
+            "description": "Experience marine life up close while snorkeling at La Jolla Cove.",
+            "price": 25,
+            "distance": 2.3,
+            "type": "outdoor",
+            "date": "March 28, 2024",
+            "time": "8:00 AM - 6:00 PM",
+            "location": "San Diego"
+        },
+        {
+            "id": "eugene-saturday-market",
+            "name": "Eugene Saturday Market",
+            "description": "Explore local crafts, food, and live music at Eugene’s famous market.",
+            "price": 0,
+            "distance": 1.2,
+            "type": "food & drink",
+            "date": "March 23, 2024",
+            "time": "10:00 AM - 4:00 PM",
+            "location": "Eugene"
+        },
+        {
+            "id": "mount-pisgah-hike",
+            "name": "Mount Pisgah Hike",
+            "description": "Enjoy a scenic hike with beautiful views at Mount Pisgah in Eugene.",
+            "price": 0,
+            "distance": 3.5,
+            "type": "outdoor",
+            "date": "March 30, 2024",
+            "time": "7:00 AM - 7:00 PM",
+            "location": "Eugene"
         }
     ]
 }
