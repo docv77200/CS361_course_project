@@ -1,28 +1,10 @@
-<h1>Create Your Profile</h1>
+<h1>Create an Account</h1>
+{{#if error}}
+    <p class="error">{{error}}</p>
+{{/if}}
 <form action="/profile" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" name="username" required>
-
-    <label for="password">Password:</label>
-    <input type="password" name="password" required>
-
-    <label for="securityQuestion">Choose a Security Question:</label>
-    <select name="securityQuestion" required>
-        <option value="firstPet">What was your first pet?</option>
-        <option value="middleName">What is your middle name?</option>
-        <option value="middleSchool">Where did you attend middle school?</option>
-    </select>
-
-    <label for="securityAnswer">Answer:</label>
-    <input type="text" name="securityAnswer" required>
-
-    <h3>Select Your Interests</h3>
-    <div>
-        <input type="checkbox" name="interests[]" value="outdoor"> Outdoor
-        <input type="checkbox" name="interests[]" value="food & drink"> Food & Drink
-        <input type="checkbox" name="interests[]" value="tourist attraction"> Tourist Attractions
-        <input type="checkbox" name="interests[]" value="indoor"> Indoor
-    </div>
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
 
     <!-- City Selection -->
     <label for="city">Select Your City:</label>
@@ -31,10 +13,25 @@
         <option value="Los Angeles">Los Angeles</option>
         <option value="Seattle">Seattle</option>
         <option value="Portland">Portland</option>
-        <option value="San Franscisco">San Franscisco</option>
-        <option value="San Diego">San Diego</option>
-        <option value="Eugene">Eugene</option>
     </select>
 
-    <button type="submit">Create Profile</button>
+    <!-- Interest Selection -->
+    <label>Select Your Interests:</label>
+    <div>
+        <input type="checkbox" name="interests" value="outdoor"> Outdoor
+        <input type="checkbox" name="interests" value="food & drink"> Food & Drink
+        <input type="checkbox" name="interests" value="tourist attraction"> Tourist Attraction
+        <input type="checkbox" name="interests" value="indoor"> Indoor
+    </div>
+
+    <label for="securityQuestion">Choose a Security Question:</label>
+    <select name="securityQuestion" id="securityQuestion" required>
+        <option value="firstPet">What was your first pet?</option>
+        <option value="middleName">What is your middle name?</option>
+        <option value="middleSchool">Where did you attend middle school?</option>
+    </select>
+
+    <input type="text" name="securityAnswer" placeholder="Answer" required>
+
+    <button type="submit">Create Account</button>
 </form>

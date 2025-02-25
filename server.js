@@ -79,15 +79,24 @@ app.get('/explore', (req, res) => {
     res.render('explore', { title: 'Explore Activities', user: req.session.user, activities });
 });
 
+// Profile Setup Page (GET)
+app.get('/profile', (req, res) => {
+    res.render('profilesetup', { title: 'Create an Account' });
+});
+
 // Profile Setup Page (POST) - Create an account
 app.post('/profile', (req, res) => {
     const { username, password, securityQuestion, securityAnswer, city, interests } = req.body;
+    
+    // Ensure interests is always an array
     let userInterests = Array.isArray(interests) ? interests : [interests];
 
-    if (!username || !password || !securityQuestion || !securityAnswer || !city || !userInterests) {
+    // Check if all fields are filled
+    if (!username || !password || !securityQuestion || !securityAnswer || !city || userInterests.length === 0) {
         return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
     }
 
+    // Create new user object
     const newUser = {
         username,
         password,
@@ -101,6 +110,7 @@ app.post('/profile', (req, res) => {
     saveUserData(newUser);
     res.redirect('/');
 });
+
 
 
 // Forgot Password (GET)
