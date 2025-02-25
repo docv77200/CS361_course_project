@@ -79,17 +79,12 @@ app.get('/explore', (req, res) => {
     res.render('explore', { title: 'Explore Activities', user: req.session.user, activities });
 });
 
-// Profile Setup Page (GET)
-app.get('/profile', (req, res) => {
-    res.render('profilesetup', { title: 'Create an Account' });
-});
-
-// Profile Setup (POST) - Create an account
+// Profile Setup Page (POST) - Create an account
 app.post('/profile', (req, res) => {
-    const { username, password, securityQuestion, securityAnswer, interests } = req.body;
+    const { username, password, securityQuestion, securityAnswer, city, interests } = req.body;
     let userInterests = Array.isArray(interests) ? interests : [interests];
 
-    if (!username || !password || !securityQuestion || !securityAnswer || !userInterests) {
+    if (!username || !password || !securityQuestion || !securityAnswer || !city || !userInterests) {
         return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
     }
 
@@ -98,6 +93,7 @@ app.post('/profile', (req, res) => {
         password,
         securityQuestion,
         securityAnswer,
+        city,  // Store the city of origin
         interests: userInterests,
         bookmarkedActivities: []
     };
@@ -105,6 +101,7 @@ app.post('/profile', (req, res) => {
     saveUserData(newUser);
     res.redirect('/');
 });
+
 
 // Forgot Password (GET)
 app.get('/forgot-password', (req, res) => {
