@@ -117,6 +117,20 @@ app.get('/explore', async (req, res) => {
     }
 });
 
+// 📢 Send Notification (Calls Notification Microservice)
+app.post('/api/notify', async (req, res) => {
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ error: "Message is required" });
+
+    try {
+        await axios.post('http://127.0.0.1:3000/send-notification', { text: message });
+        res.json({ success: true, message: "Notification sent successfully!" });
+    } catch (error) {
+        console.error("Error sending notification:", error);
+        res.status(500).json({ error: "Failed to send notification" });
+    }
+});
+
 // 👤 Profile Setup Page (GET)
 app.get('/profile', (req, res) => {
     res.render('profilesetup', { title: 'Create an Account' });
@@ -202,8 +216,7 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-// 🔖 Bookmark an Activity (POST)
-app.post('/api/bookmark', (req, res) => {
+app.post('/api/bookmark', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
 
     const { activityId, action } = req.body;
@@ -218,17 +231,35 @@ app.post('/api/bookmark', (req, res) => {
         userData.bookmarkedActivities = [];
     }
 
+    const activities = loadActivityData();
+    const activity = activities.find(act => act.id === activityId);
+
+    if (!activity) return res.status(404).json({ error: "Activity not found" });
+
+    let message = "";
+
     if (action === 'add' && !userData.bookmarkedActivities.includes(activityId)) {
         userData.bookmarkedActivities.push(activityId);
+        message = `"${activity.name}" added to your bookmarks!`;
     } else if (action === 'remove') {
         userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
+        message = `"${activity.name}" removed from your bookmarks!`;
     } else {
         return res.status(400).json({ error: 'Invalid action' });
     }
 
     saveUserData(userData);
-    res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities });
+
+    // Call the Notification Microservice
+    try {
+        await axios.post('http://127.0.0.1:3000/send-notification', { text: message });
+    } catch (error) {
+        console.error("Error sending notification:", error.message);
+    }
+
+    res.status(200).json({ success: true, message, bookmarkedActivities: userData.bookmarkedActivities });
 });
+
 
 // 📜 Get Bookmarked Activities (GET)
 app.get('/api/get-bookmarks', (req, res) => {

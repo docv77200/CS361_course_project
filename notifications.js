@@ -28,7 +28,7 @@ app.post("/send-notification", async (req, res) => {
 
         // Send a system notification with a button
         notifier.notify({
-            title: "New Notification",
+            title: "your event is now bookmarked!",
             message: text,
             sound: true, // 🔊 Play a sound
             wait: true,  // ⏳ Keep window open until user interacts
