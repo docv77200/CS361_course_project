@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success && result.bookmarkedActivities.length > 0) {
                 result.bookmarkedActivities.forEach(activity => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<strong>${activity.name}</strong> - ${activity.type}`;
+                    li.innerHTML = `<strong>${activity.name}</strong> - ${activity.description}`;
                     bookmarkedList.appendChild(li);
                 });
             } else {
