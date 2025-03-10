@@ -3,7 +3,7 @@ const exphbs = require('express-handlebars');
 const fs = require('fs');
 const path = require('path');
 const session = require('express-session');
-const axios = require('axios'); // Import axios for microservice requests
+const axios = require('axios');
 
 const app = express();
 
@@ -53,178 +53,35 @@ function loadActivityData() {
     }
 }
 
-// ---------------------- Routes ---------------------- //
+// ---------------------- API Routes ---------------------- //
 
-// 🏠 Default route - Sign-in page
-app.get('/', (req, res) => {
-    res.render('signin', { title: 'Sign In' });
-});
-
-// 📝 Handle Sign-in
-app.post('/signin', (req, res) => {
-    const { username, password } = req.body;
-    const userData = loadUserData();
-
-    if (userData.username === username && userData.password === password) {
-        req.session.user = { username: userData.username, city: userData.city, interests: userData.interests };
-        return res.redirect('/home');
+// ✅ **New Route: Get Bookmarked Activities**
+app.get('/api/get-bookmarks', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, error: 'User not authenticated' });
     }
-
-    res.render('signin', { title: 'Sign In', error: 'Invalid username or password.' });
-});
-
-// 🏠 Home Page - Requires Login
-app.get('/home', (req, res) => {
-    if (!req.session.user) return res.redirect('/');
-    res.render('home', { title: 'Home', user: req.session.user });
-});
-
-// 🌍 Route: Explore Page (Fetch recommendations from microservice)
-app.get('/explore', async (req, res) => {
-    if (!req.session.user) return res.redirect('/');
 
     const userData = loadUserData();
-    const { city, interests } = userData;
-    const activities = loadActivityData();
-
-    try {
-        const response = await axios.post('http://127.0.0.1:6767/recommendations', {
-            location: city,
-            activity_type: interests.join(", "), 
-            budget: "$50"
-        });
-
-        const recommendedActivities = response.data;
-
-        // Sort recommended activities to the top
-        const sortedActivities = [
-            ...recommendedActivities, 
-            ...activities.filter(act => !recommendedActivities.some(r => r.name === act.name))
-        ];
-
-        res.render('explore', { 
-            title: 'Explore Activities', 
-            user: req.session.user, 
-            activities: sortedActivities 
-        });
-    } catch (error) {
-        console.error("❌ Error fetching recommendations:", error.message);
-        res.render('explore', { 
-            title: 'Explore Activities', 
-            user: req.session.user, 
-            activities 
-        });
-    }
-});
-
-// 📢 Send Notification (Calls Notification Microservice)
-app.post('/api/notify', async (req, res) => {
-    const { message } = req.body;
-    if (!message) return res.status(400).json({ error: "Message is required" });
-
-    try {
-        await axios.post('http://127.0.0.1:3000/send-notification', { text: message });
-        res.json({ success: true, message: "Notification sent successfully!" });
-    } catch (error) {
-        console.error("Error sending notification:", error);
-        res.status(500).json({ error: "Failed to send notification" });
-    }
-});
-
-// 👤 Profile Setup Page (GET)
-app.get('/profile', (req, res) => {
-    res.render('profilesetup', { title: 'Create an Account' });
-});
-
-// 👤 Profile Setup Page (POST) - Create an account
-app.post('/profile', (req, res) => {
-    const { username, password, securityQuestion, securityAnswer, city, interests } = req.body;
-    
-    let userInterests = Array.isArray(interests) ? interests : [interests];
-
-    if (!username || !password || !securityQuestion || !securityAnswer || !city || userInterests.length === 0) {
-        return res.status(400).render('profilesetup', { title: 'Create an Account', error: 'All fields are required.' });
-    }
-
-    const newUser = {
-        username,
-        password,
-        securityQuestion,
-        securityAnswer,
-        city, 
-        interests: userInterests,
-        bookmarkedActivities: []
-    };
-
-    saveUserData(newUser);
-    res.redirect('/');
-});
-
-// 🔑 Forgot Password (GET)
-app.get('/forgot-password', (req, res) => {
-    res.render('forgot-password', { title: 'Forgot Password' });
-});
-
-// 🔑 Forgot Password (POST)
-app.post('/forgot-password', (req, res) => {
-    const { username, securityAnswer } = req.body;
-    const userData = loadUserData();
-
-    if (userData.username === username && userData.securityAnswer === securityAnswer) {
-        res.render('reset-password', { title: 'Reset Password', user: username });
-    } else {
-        res.render('forgot-password', { title: 'Forgot Password', error: 'Invalid username or security answer.' });
-    }
-});
-
-// 🔑 Reset Password (GET)
-app.get('/reset-password', (req, res) => {
-    res.render('reset-password', { title: 'Reset Password' });
-});
-
-// 🔑 Reset Password (POST)
-app.post('/reset-password', (req, res) => {
-    const { username, newPassword } = req.body;
-    let userData = loadUserData();
-
-    if (userData.username === username) {
-        userData.password = newPassword;
-        saveUserData(userData);
-        return res.redirect('/');
-    }
-
-    res.render('reset-password', { title: 'Reset Password', error: 'Username not found.' });
-});
-
-// 🎟️ Activity Details Page
-app.get('/activity/:id', (req, res) => {
-    if (!req.session.user) return res.redirect('/');
+    const bookmarkedIds = userData.bookmarkedActivities || [];
 
     const activities = loadActivityData();
-    const activity = activities.find(act => act.id === req.params.id);
+    const bookmarkedActivities = activities.filter(act => bookmarkedIds.includes(act.id));
 
-    if (!activity) {
-        return res.status(404).render('error', { title: 'Activity Not Found', message: 'The requested activity does not exist.' });
-    }
-
-    res.render('activity', { title: activity.name, user: req.session.user, activity });
+    res.json({ success: true, bookmarkedActivities });
 });
 
-// 🚪 Logout Route
-app.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
-});
-
+// ✅ **Improved: Bookmark/Unbookmark Activity**
 app.post('/api/bookmark', async (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, error: 'User not authenticated' });
+    }
 
     const { activityId, action } = req.body;
     const userData = loadUserData();
     const username = req.session.user.username;
 
     if (!userData.username || userData.username !== username) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ success: false, error: 'User not found' });
     }
 
     if (!Array.isArray(userData.bookmarkedActivities)) {
@@ -234,18 +91,24 @@ app.post('/api/bookmark', async (req, res) => {
     const activities = loadActivityData();
     const activity = activities.find(act => act.id === activityId);
 
-    if (!activity) return res.status(404).json({ error: "Activity not found" });
+    if (!activity) {
+        return res.status(404).json({ success: false, error: "Activity not found" });
+    }
 
     let message = "";
 
-    if (action === 'add' && !userData.bookmarkedActivities.includes(activityId)) {
-        userData.bookmarkedActivities.push(activityId);
-        message = `"${activity.name}" added to your bookmarks!`;
+    if (action === 'add') {
+        if (!userData.bookmarkedActivities.includes(activityId)) {
+            userData.bookmarkedActivities.push(activityId);
+            message = `"${activity.name}" added to your bookmarks!`;
+        } else {
+            return res.status(400).json({ success: false, error: "Activity already bookmarked" });
+        }
     } else if (action === 'remove') {
         userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
         message = `"${activity.name}" removed from your bookmarks!`;
     } else {
-        return res.status(400).json({ error: 'Invalid action' });
+        return res.status(400).json({ success: false, error: 'Invalid action' });
     }
 
     saveUserData(userData);
@@ -254,15 +117,27 @@ app.post('/api/bookmark', async (req, res) => {
     try {
         await axios.post('http://127.0.0.1:3000/send-notification', { text: message });
     } catch (error) {
-        console.error("Error sending notification:", error.message);
+        console.error("❌ Error sending notification:", error.message);
     }
 
     res.status(200).json({ success: true, message, bookmarkedActivities: userData.bookmarkedActivities });
 });
 
+// ✅ **Improved: Notification Microservice Request**
+app.post('/api/notify', async (req, res) => {
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ success: false, error: "Message is required" });
 
+    try {
+        await axios.post('http://127.0.0.1:3000/send-notification', { text: message });
+        res.json({ success: true, message: "Notification sent successfully!" });
+    } catch (error) {
+        console.error("❌ Error sending notification:", error.message);
+        res.status(500).json({ success: false, error: "Failed to send notification" });
+    }
+});
 
+// ---------------------- Server Startup ---------------------- //
 
-// 🚀 Start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
