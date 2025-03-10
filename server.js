@@ -269,9 +269,11 @@ app.get('/api/get-bookmarks', (req, res) => {
     const bookmarkedIds = userData.bookmarkedActivities || [];
 
     const activities = loadActivityData();
-    
-    // Map IDs to full activity objects
-    const bookmarkedActivities = activities.filter(act => bookmarkedIds.includes(act.id));
+
+    // Find the full activity object for each bookmarked ID
+    const bookmarkedActivities = bookmarkedIds
+        .map(id => activities.find(activity => activity.id === id))
+        .filter(activity => activity !== undefined); // Remove undefined results
 
     res.status(200).json({ success: true, bookmarkedActivities });
 });
