@@ -1,3 +1,5 @@
+# Sends data (microservice)
+
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -14,25 +16,15 @@ activities = [
 @app.route('/recommendations', methods=['POST'])
 def get_recommendations():
     data = request.json
-    location = data.get("location", "").strip()
-    activity_type = data.get("activity_type", "").strip()
-    budget = data.get("budget", "").strip()
+    location = data.get("location")
+    activity_type = data.get("activity_type")
+    budget = data.get("budget")
 
-    # Convert budget to a numerical value if provided
-    budget_value = None
-    if budget and budget != "None":
-        try:
-            budget_value = int(budget.replace('$', '').split('-')[0])
-        except ValueError:
-            return jsonify({"error": "Invalid budget format"}), 400
-
-    # Filter activities based on provided criteria
-    filtered_activities = [
-        activity for activity in activities
-        if (not location or location.lower() in activity["location"].lower()) and
-           (not activity_type or activity_type == "None" or activity_type.lower() in activity["type"].lower()) and
-           (budget_value is None or activity["price"] <= budget_value)
-    ]
+    # Filter activities based on user input
+    filtered_activities = [activity for activity in activities
+                            if (location.lower() in activity["location"].lower()) and
+                               (activity_type.lower() in activity["type"].lower()) and
+                               (activity["price"] <= int(budget.replace('$', '').split('-')[0]))]
 
     return jsonify(filtered_activities)
 
