@@ -261,6 +261,7 @@ app.post('/api/bookmark', async (req, res) => {
 });
 
 
+
 // 📜 Get Bookmarked Activities (GET)
 app.get('/api/get-bookmarks', (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
