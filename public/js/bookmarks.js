@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (result.success) {
                     button.textContent = action === 'add' ? 'Remove Bookmark' : 'Bookmark';
                 } else {
-                    alert(Failed to update bookmarks: ${result.error});
+                    alert(`Failed to update bookmarks: ${result.error}`);
                 }
             } catch (error) {
                 alert('Error: Could not update bookmarks.');
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/get-bookmarks', { method: 'GET' });
 
             if (!response.ok) {
-                throw new Error(HTTP error! Status: ${response.status});
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
             const result = await response.json();
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success && result.bookmarkedActivities.length > 0) {
                 result.bookmarkedActivities.forEach(activity => {
                     const li = document.createElement('li');
-                    li.innerHTML = <strong>${activity.name}</strong> - ${activity.type};
+                    li.innerHTML = `<strong>${activity.name}</strong> - ${activity.type}`;
                     bookmarkedList.appendChild(li);
                 });
             } else {
@@ -80,4 +80,4 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModalBtn?.addEventListener('click', () => {
         bookmarkModal.style.display = 'none';
     });
-}); 
+});
