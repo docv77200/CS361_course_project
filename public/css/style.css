@@ -152,3 +152,19 @@ button:hover {
         flex-direction: column;
     }
 }
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adds spacing between buttons */
+    margin-top: 10px;
+}
+
+#reset-filters {
+    background-color: #FF5733; /* Red color for reset */
+    color: white;
+    font-weight: bold;
+}
+
+#reset-filters:hover {
+    background-color: #D84315;
+}
