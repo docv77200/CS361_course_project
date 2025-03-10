@@ -220,6 +220,12 @@ app.post('/api/bookmark', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
 
     const { activityId, action } = req.body;
+    
+    // 🛠 Debugging Logs
+    console.log("Received Bookmark Request:");
+    console.log("Activity ID:", activityId);
+    console.log("Action:", action);
+
     const userData = loadUserData();
     const username = req.session.user.username;
 
@@ -234,17 +240,21 @@ app.post('/api/bookmark', async (req, res) => {
     const activities = loadActivityData();
     const activity = activities.find(act => act.id === activityId);
 
-    if (!activity) return res.status(404).json({ error: "Activity not found" });
+    if (!activity) {
+        console.log("❌ Error: Activity not found!");
+        return res.status(404).json({ error: "Activity not found" });
+    }
 
     let message = "";
 
     if (action === 'add' && !userData.bookmarkedActivities.includes(activityId)) {
         userData.bookmarkedActivities.push(activityId);
         message = `"${activity.name}" added to your bookmarks!`;
-    } else if (action === 'remove') {
+    } else if (action === 'remove' && userData.bookmarkedActivities.includes(activityId)) {
         userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
         message = `"${activity.name}" removed from your bookmarks!`;
     } else {
+        console.log("❌ Invalid action received:", action); // Debugging
         return res.status(400).json({ error: 'Invalid action' });
     }
 

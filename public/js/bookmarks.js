@@ -7,25 +7,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bookmarkButtons.forEach(button => {
         button.addEventListener('click', async () => {
-            const activityId = button.dataset.id?.trim();
-
+            const activityId = button.dataset.id?.trim();  // Ensure we get a valid ID
+    
             if (!activityId) {
                 console.error('Error: Missing activity ID in button', button);
                 alert('Error: Unable to bookmark this activity.');
                 return;
             }
-
+    
+            // 🛠 Debugging Logs
+            console.log("Activity ID:", activityId);
+            console.log("Button Text:", button.textContent);
+    
             const action = button.textContent.includes('Remove') ? 'remove' : 'add';
-
+            console.log("Action Sent:", action);  // ✅ Log action to confirm
+    
             try {
                 const response = await fetch('/api/bookmark', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ activityId, action })
                 });
-
+    
                 const result = await response.json();
-
+                console.log("Server Response:", result); // ✅ Log server response
+    
                 if (result.success) {
                     button.textContent = action === 'add' ? 'Remove Bookmark' : 'Bookmark';
                 } else {
@@ -36,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Bookmarking error:', error);
             }
         });
+    });
+    
+
     });
 
     viewBookmarksBtn?.addEventListener('click', async () => {
@@ -74,4 +83,4 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModalBtn?.addEventListener('click', () => {
         bookmarkModal.style.display = 'none';
     });
-});
+
