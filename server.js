@@ -216,6 +216,26 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+app.post('/api/filter-activities', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
+
+    const { location, activityType, budget } = req.body;
+
+    try {
+        const response = await axios.post('http://127.0.0.1:6767/recommendations', {
+            location,
+            activity_type: activityType,
+            budget
+        });
+
+        res.json({ success: true, activities: response.data });
+    } catch (error) {
+        console.error(" Error fetching filtered activities:", error.message);
+        res.status(500).json({ error: "Failed to fetch activities" });
+    }
+});
+
+
 app.post('/api/bookmark', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
 

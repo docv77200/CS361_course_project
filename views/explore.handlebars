@@ -1,15 +1,30 @@
 <h1>Explore Activities</h1>
-<button id="view-bookmarks-btn">View Bookmarked Activities</button>
 
-<!-- Bookmark Modal -->
-<div id="bookmark-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>My Bookmarked Activities</h2>
-        <ul id="bookmarked-list"></ul>
-    </div>
-</div>
+<!-- Filter Form -->
+<form id="filter-form">
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" placeholder="Enter city">
 
+    <label for="activity-type">Activity Type:</label>
+    <select id="activity-type" name="activityType">
+        <option value="outdoor">Outdoor</option>
+        <option value="food & drink">Food & Drink</option>
+        <option value="relaxation">Relaxation</option>
+        <option value="tourist attraction">Tourist Attraction</option>
+    </select>
+
+    <label for="budget">Budget:</label>
+    <select id="budget" name="budget">
+        <option value="$0">$0</option>
+        <option value="$10">$10</option>
+        <option value="$20">$20</option>
+        <option value="$30">$30</option>
+    </select>
+
+    <button type="submit">Apply Filters</button>
+</form>
+
+<!-- Activities Display -->
 <div id="activity-grid">
     {{#each activities}}
         <div class="activity-card" data-id="{{this.id}}">
@@ -21,12 +36,10 @@
             <p>Time: {{this.time}}</p>
             <p>Date: {{this.date}}</p>
             <p>Location: {{this.location}}</p>
-
-            <button class="bookmark-btn" data-id="{{this.id}}">
-                {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
-            </button>
+            <button class="bookmark-btn" data-id="{{this.id}}">Bookmark</button>
         </div>
     {{/each}}
 </div>
 
 <script src="/js/bookmarks.js"></script>
+<script src="/js/filters.js"></script>
