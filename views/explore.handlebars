@@ -1,5 +1,17 @@
 <h1>Explore Activities</h1>
 
+<!-- View Bookmarked Activities Button -->
+<button id="view-bookmarks-btn">View Bookmarked Activities</button>
+
+<!-- Bookmark Modal -->
+<div id="bookmark-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>My Bookmarked Activities</h2>
+        <ul id="bookmarked-list"></ul>
+    </div>
+</div>
+
 <!-- Filter Form -->
 <form id="filter-form">
     <label for="location">Location:</label>
@@ -36,7 +48,11 @@
             <p>Time: {{this.time}}</p>
             <p>Date: {{this.date}}</p>
             <p>Location: {{this.location}}</p>
-            <button class="bookmark-btn" data-id="{{this.id}}">Bookmark</button>
+
+            <!-- Bookmark Button: Shows "Remove Bookmark" if already bookmarked -->
+            <button class="bookmark-btn" data-id="{{this.id}}">
+                {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
+            </button>
         </div>
     {{/each}}
 </div>
