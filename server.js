@@ -220,6 +220,21 @@ app.post('/api/bookmark', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
 
     const { activityId, action } = req.body;
+
+    // 🔍 Debugging Logs
+    console.log("📩 Received Bookmark Request:", req.body);
+    console.log("🛠 Activity ID:", activityId, " | Action:", action);
+
+    if (!activityId || !action) {
+        console.log("❌ Error: Missing required fields.");
+        return res.status(400).json({ error: "Missing activityId or action" });
+    }
+
+    if (action !== "add" && action !== "remove") {
+        console.log("❌ Invalid action received:", action);
+        return res.status(400).json({ error: "Invalid action" });
+    }
+
     const userData = loadUserData();
     const username = req.session.user.username;
 
@@ -234,32 +249,51 @@ app.post('/api/bookmark', async (req, res) => {
     const activities = loadActivityData();
     const activity = activities.find(act => act.id === activityId);
 
-    if (!activity) return res.status(404).json({ error: "Activity not found" });
+    if (!activity) {
+        console.log("❌ Error: Activity not found!");
+        return res.status(404).json({ error: "Activity not found" });
+    }
 
     let message = "";
 
-    if (action === 'add' && !userData.bookmarkedActivities.includes(activityId)) {
+    if (action === "add" && !userData.bookmarkedActivities.includes(activityId)) {
         userData.bookmarkedActivities.push(activityId);
         message = `"${activity.name}" added to your bookmarks!`;
-    } else if (action === 'remove') {
+    } else if (action === "remove" && userData.bookmarkedActivities.includes(activityId)) {
         userData.bookmarkedActivities = userData.bookmarkedActivities.filter(id => id !== activityId);
         message = `"${activity.name}" removed from your bookmarks!`;
     } else {
-        return res.status(400).json({ error: 'Invalid action' });
+        console.log("❌ Invalid action received:", action);
+        return res.status(400).json({ error: "Invalid action" });
     }
 
     saveUserData(userData);
 
-    // Call the Notification Microservice
+    // 📢 Call the Notification Microservice
     try {
         await axios.post('http://127.0.0.1:3000/send-notification', { text: message });
+        console.log("✅ Notification Sent:", message);
     } catch (error) {
-        console.error("Error sending notification:", error.message);
+        console.error("❌ Error sending notification:", error.message);
     }
 
     res.status(200).json({ success: true, message, bookmarkedActivities: userData.bookmarkedActivities });
 });
 
+app.get('/api/get-bookmarks', (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
+
+    const userData = loadUserData();
+    const bookmarkedIds = userData.bookmarkedActivities || [];
+    const activities = loadActivityData();
+
+    // Map IDs to full activity objects
+    const bookmarkedActivities = bookmarkedIds
+        .map(id => activities.find(activity => activity.id === id))
+        .filter(activity => activity !== undefined); // Remove any undefined values
+
+    res.status(200).json({ success: true, bookmarkedActivities });
+});
 
 
 

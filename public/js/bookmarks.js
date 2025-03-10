@@ -13,25 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateModal = async () => {
         try {
             const response = await fetch('/api/get-bookmarks', { method: 'GET' });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
+    
             const result = await response.json();
-            console.log("Updated Bookmarked Activities:", result.bookmarkedActivities);
-
+            console.log("📜 Updated Bookmarked Activities:", result.bookmarkedActivities);
+    
             // Clear previous list
             bookmarkedList.innerHTML = '';
-
+    
             if (result.success && result.bookmarkedActivities.length > 0) {
                 result.bookmarkedActivities.forEach(activity => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<strong>${activity.name}</strong> - ${activity.type} 
+                    li.innerHTML = `<strong>${activity.name}</strong> - ${activity.description} 
                         <button class="remove-bookmark" data-id="${activity.id}">Remove</button>`;
                     bookmarkedList.appendChild(li);
                 });
-
+    
                 // Add event listeners to remove buttons
                 document.querySelectorAll('.remove-bookmark').forEach(button => {
                     button.addEventListener('click', () => removeBookmark(button.dataset.id));
@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 bookmarkedList.innerHTML = '<p>No bookmarked activities yet.</p>';
             }
         } catch (error) {
-            console.error('Error updating bookmarks modal:', error);
+            console.error('❌ Error updating bookmarks modal:', error);
             alert('Failed to update bookmarked activities.');
         }
     };
-
+    
     const removeBookmark = async (activityId) => {
         try {
             const response = await fetch('/api/bookmark', {
@@ -68,45 +68,49 @@ document.addEventListener('DOMContentLoaded', () => {
     bookmarkButtons.forEach(button => {
         button.addEventListener('click', async () => {
             const activityId = button.dataset.id?.trim();
-
+    
             if (!activityId) {
                 console.error('Error: Missing activity ID in button', button);
                 alert('Error: Unable to bookmark this activity.');
                 return;
             }
-
-            const action = button.textContent.includes('Remove') ? 'remove' : 'add';
-
+    
+            let action = button.textContent.trim().includes('Remove') ? 'remove' : 'add';
+    
+            console.log("🔄 Sending Bookmark Request:", { activityId, action }); // Debugging
+    
             try {
                 const response = await fetch('/api/bookmark', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ activityId, action })
                 });
-
+    
                 const result = await response.json();
-
+                console.log("✅ Server Response:", result); // Debugging
+    
                 if (result.success) {
                     button.textContent = action === 'add' ? 'Remove Bookmark' : 'Bookmark';
-
-                    // Notify the user via the notification microservice
+    
+                    // 🟢 Notify the user via the notification microservice
                     await fetch('/api/notify', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ message: result.message })
                     });
-
-                    // Update modal dynamically after bookmarking
+    
+                    // 🔄 Update modal dynamically after bookmarking
                     updateModal();
                 } else {
-                    alert(`Failed to update bookmarks: ${result.error}`);
+                    alert(`❌ Failed to update bookmarks: ${result.error}`);
                 }
             } catch (error) {
-                alert('Error: Could not update bookmarks.');
-                console.error('Bookmarking error:', error);
+                alert(' Error: Could not update bookmarks.');
+                console.error(' Bookmarking error:', error);
             }
         });
     });
+    
 
     // Fetch and display bookmarked activities when "View Bookmarked Activities" is clicked
     viewBookmarksBtn?.addEventListener('click', async () => {
