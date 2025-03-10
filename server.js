@@ -266,8 +266,17 @@ app.get('/api/get-bookmarks', (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
 
     const userData = loadUserData();
-    res.status(200).json({ success: true, bookmarkedActivities: userData.bookmarkedActivities || [] });
+    const bookmarkedIds = userData.bookmarkedActivities || [];
+    const activities = loadActivityData();
+
+    // Map IDs to full activity objects
+    const bookmarkedActivities = bookmarkedIds
+        .map(id => activities.find(activity => activity.id === id))
+        .filter(activity => activity !== undefined); // Remove any undefined values
+
+    res.status(200).json({ success: true, bookmarkedActivities });
 });
+
 
 // 🚀 Start the server
 const PORT = process.env.PORT || 3001;

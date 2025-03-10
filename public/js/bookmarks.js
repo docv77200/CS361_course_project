@@ -5,14 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookmarkedList = document.getElementById('bookmarked-list');
     const closeModalBtn = document.querySelector('.close-btn');
 
-    // Ensure all bookmark buttons are functional
-    if (bookmarkButtons.length === 0) {
-        console.warn("No bookmark buttons found on the page.");
-    }
-
     bookmarkButtons.forEach(button => {
         button.addEventListener('click', async () => {
-            const activityId = button.dataset.id?.trim();  // Ensure we get a valid ID
+            const activityId = button.dataset.id?.trim();
 
             if (!activityId) {
                 console.error('Error: Missing activity ID in button', button);
@@ -43,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fetch and display bookmarked activities when "View Bookmarked Activities" is clicked
     viewBookmarksBtn?.addEventListener('click', async () => {
         try {
             const response = await fetch('/api/get-bookmarks', { method: 'GET' });
@@ -61,7 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.success && result.bookmarkedActivities.length > 0) {
                 result.bookmarkedActivities.forEach(activity => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<strong>${activity.name}</strong> - ${activity.description}`;
+                    li.innerHTML = `<strong>${activity.name}</strong> - ${activity.description} <br>
+                                    <em>${activity.date} | ${activity.time}</em>`;
                     bookmarkedList.appendChild(li);
                 });
             } else {
@@ -76,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Close modal when clicking the close button
     closeModalBtn?.addEventListener('click', () => {
         bookmarkModal.style.display = 'none';
     });
