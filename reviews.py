@@ -18,36 +18,36 @@ def save_reviews(reviews):
     with open(REVIEWS_FILE, "w") as file:
         json.dump(reviews, file, indent=4)
 
-# Get reviews for a specific activity
+# Get the average rating for an activity
 @app.route("/reviews/<activity_id>", methods=["GET"])
 def get_reviews(activity_id):
     reviews = load_reviews()
-    return jsonify(reviews.get(activity_id, []))
+    ratings = reviews.get(activity_id, [])
 
-# Submit a new review
+    if not ratings:
+        return jsonify({"average_rating": 0, "total_reviews": 0})
+
+    avg_rating = sum(ratings) / len(ratings)
+    return jsonify({"average_rating": round(avg_rating, 1), "total_reviews": len(ratings)})
+
+# Submit a new star rating
 @app.route("/reviews", methods=["POST"])
 def add_review():
     data = request.json
     activity_id = data.get("activity_id")
-    username = data.get("username")
     rating = data.get("rating")
-    comment = data.get("comment")
 
-    if not activity_id or not username or not rating or not comment:
-        return jsonify({"error": "Missing required fields"}), 400
+    if not activity_id or rating not in [1, 2, 3, 4, 5]:
+        return jsonify({"error": "Invalid rating"}), 400
 
     reviews = load_reviews()
     if activity_id not in reviews:
         reviews[activity_id] = []
 
-    reviews[activity_id].append({
-        "username": username,
-        "rating": rating,
-        "comment": comment
-    })
-
+    reviews[activity_id].append(rating)
     save_reviews(reviews)
-    return jsonify({"success": True, "message": "Review added successfully!"})
+
+    return jsonify({"success": True, "message": "Rating submitted successfully!"})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5002)

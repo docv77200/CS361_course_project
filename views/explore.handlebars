@@ -20,22 +20,18 @@
         <h3>Reviews</h3>
         <ul class="reviews-list"></ul>
         
-        <!-- Add Review Form -->
-        <form class="review-form">
-            <input type="hidden" name="activity_id" value="{{this.id}}">
-            <input type="text" name="username" placeholder="Your Name" required>
-            <select name="rating" required>
-                <option value="5">★★★★★ (5 Stars)</option>
-                <option value="4">★★★★☆ (4 Stars)</option>
-                <option value="3">★★★☆☆ (3 Stars)</option>
-                <option value="2">★★☆☆☆ (2 Stars)</option>
-                <option value="1">★☆☆☆☆ (1 Star)</option>
-            </select>
-            <textarea name="comment" placeholder="Write your review..." required></textarea>
-            <button type="submit">Submit Review</button>
-        </form>
-    </div>
+        <!-- Star Rating System -->
+<div class="star-rating" data-id="{{this.id}}">
+    <span class="star" data-value="1">&#9733;</span>
+    <span class="star" data-value="2">&#9733;</span>
+    <span class="star" data-value="3">&#9733;</span>
+    <span class="star" data-value="4">&#9733;</span>
+    <span class="star" data-value="5">&#9733;</span>
 </div>
+
+<!-- Average Rating Display -->
+<p class="average-rating" id="avg-rating-{{this.id}}">Average Rating: Loading...</p>
+
 
 
 <!-- Filter Form -->

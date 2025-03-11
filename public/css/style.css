@@ -251,3 +251,26 @@ button:hover {
 #reset-filters:hover {
     background-color: #D84315;
 }
+/* Star Rating Styles */
+.star-rating {
+    font-size: 24px;
+    cursor: pointer;
+    color: gray;
+}
+
+.star-rating .star:hover {
+    color: gold;
+}
+
+.star-rating .star:active {
+    transform: scale(1.1);
+}
+
+/* Average Rating Text */
+.average-rating {
+    margin-top: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #FFD700; /* Gold color for rating */
+}
+
