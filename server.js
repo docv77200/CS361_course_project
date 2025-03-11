@@ -335,6 +335,19 @@ app.post("/api/reviews", async (req, res) => {
     }
 });
 
+app.get("/api/recommendations", async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: "User not authenticated" });
+
+    try {
+        const username = req.session.user.username;
+        const response = await axios.get(`http://127.0.0.1:5003/recommendations/${username}`);
+        res.json(response.data);
+    } catch (error) {
+        console.error("Error fetching recommendations:", error.message);
+        res.status(500).json({ error: "Failed to fetch recommendations" });
+    }
+});
+
 
 
 // 🚀 Start the server
