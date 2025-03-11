@@ -13,25 +13,6 @@
 </div>
 
 
-<!-- Reviews Section -->
-<div class="reviews-section">
-    <button class="view-reviews-btn" data-id="{{this.id}}">View Reviews</button>
-    <div class="reviews-container" id="reviews-{{this.id}}" style="display: none;">
-        <h3>Reviews</h3>
-        <ul class="reviews-list"></ul>
-        
-        <!-- Star Rating System -->
-<div class="star-rating" data-id="{{this.id}}">
-    <span class="star" data-value="1">&#9733;</span>
-    <span class="star" data-value="2">&#9733;</span>
-    <span class="star" data-value="3">&#9733;</span>
-    <span class="star" data-value="4">&#9733;</span>
-    <span class="star" data-value="5">&#9733;</span>
-</div>
-
-<!-- Average Rating Display -->
-<p class="average-rating" id="avg-rating-{{this.id}}">Average Rating: Loading...</p>
-
 
 
 <!-- Filter Form -->
@@ -74,7 +55,19 @@
             <p>Date: {{this.date}}</p>
             <p>Location: {{this.location}}</p>
 
-            <!-- Bookmark Button: Shows "Remove Bookmark" if already bookmarked -->
+            <!-- Star Rating System -->
+            <div class="star-rating" data-id="{{this.id}}">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+
+            <!-- Average Rating Display -->
+            <p class="average-rating" id="avg-rating-{{this.id}}">Loading...</p>
+
+            <!-- Bookmark Button -->
             <button class="bookmark-btn" data-id="{{this.id}}">
                 {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
             </button>
@@ -85,3 +78,5 @@
 <script src="/js/bookmarks.js"></script>
 <script src="/js/filters.js"></script>
 <script src="/js/reviews.js"></script>
+
+

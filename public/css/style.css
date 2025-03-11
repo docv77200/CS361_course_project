@@ -251,26 +251,36 @@ button:hover {
 #reset-filters:hover {
     background-color: #D84315;
 }
+
 /* Star Rating Styles */
 .star-rating {
     font-size: 24px;
     cursor: pointer;
     color: gray;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
 }
 
-.star-rating .star:hover {
+.star {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star:hover,
+.star:hover ~ .star {
     color: gold;
 }
 
-.star-rating .star:active {
+.star:active {
     transform: scale(1.1);
 }
 
 /* Average Rating Text */
 .average-rating {
-    margin-top: 10px;
+    margin-top: 5px;
     font-size: 1rem;
     font-weight: bold;
-    color: #FFD700; /* Gold color for rating */
+    color: #FFD700;
+    text-align: center;
 }
-
