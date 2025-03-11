@@ -315,6 +315,25 @@ app.get('/api/get-bookmarks', (req, res) => {
     res.status(200).json({ success: true, bookmarkedActivities });
 });
 
+app.get("/api/reviews/:activityId", async (req, res) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:5002/reviews/${req.params.activityId}`);
+        res.json(response.data);
+    } catch (error) {
+        console.error("Error fetching reviews:", error.message);
+        res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+});
+
+app.post("/api/reviews", async (req, res) => {
+    try {
+        const response = await axios.post("http://127.0.0.1:5002/reviews", req.body);
+        res.json(response.data);
+    } catch (error) {
+        console.error("Error submitting review:", error.message);
+        res.status(500).json({ error: "Failed to submit review" });
+    }
+});
 
 
 
