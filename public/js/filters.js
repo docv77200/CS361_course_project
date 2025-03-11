@@ -4,26 +4,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const activityGrid = document.getElementById("activity-grid");
 
     if (!filterForm || !resetButton || !activityGrid) {
-        console.error(" Error: One or more required elements are missing from the DOM.");
-        return; // Prevent script from running further if elements are missing
+        console.error("❌ Error: One or more required elements are missing from the DOM.");
+        return; // Stop script execution if elements are missing
     }
 
     // Apply Filters
     filterForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
+        // Find form elements and validate they exist
         const locationInput = document.getElementById("location");
         const activityTypeInput = document.getElementById("activity-type");
         const budgetInput = document.getElementById("budget");
 
         if (!locationInput || !activityTypeInput || !budgetInput) {
-            console.error(" Error: One or more filter inputs are missing.");
+            console.error("❌ Error: One or more filter inputs are missing.");
             return;
         }
 
-        const location = locationInput.value.trim();
-        const activityType = activityTypeInput.value;
-        const budget = budgetInput.value;
+        const location = locationInput.value.trim() || "";
+        const activityType = activityTypeInput.value || "None";
+        const budget = budgetInput.value || "None";
 
         console.log("📩 Sending filter request:", { location, activityType, budget });
 
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const result = await response.json();
-            console.log(" Filtered Activities:", result.activities);
+            console.log("✅ Filtered Activities:", result.activities);
 
             // Clear previous activities
             activityGrid.innerHTML = "";
@@ -62,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 activityGrid.innerHTML = "<p>No activities match your criteria.</p>";
             }
         } catch (error) {
-            console.error(" Error filtering activities:", error);
+            console.error("❌ Error filtering activities:", error);
             alert("Failed to apply filters.");
         }
     });
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const budgetInput = document.getElementById("budget");
 
         if (!locationInput || !activityTypeInput || !budgetInput) {
-            console.error(" Error: One or more filter inputs are missing.");
+            console.error("❌ Error: One or more filter inputs are missing.");
             return;
         }
 
@@ -94,9 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const newActivityGrid = doc.getElementById("activity-grid").innerHTML;
             activityGrid.innerHTML = newActivityGrid;
 
-            console.log(" Activities reset to default.");
+            console.log("✅ Activities reset to default.");
         } catch (error) {
-            console.error(" Error resetting filters:", error);
+            console.error("❌ Error resetting filters:", error);
             alert("Failed to reset filters.");
         }
     });
