@@ -1,32 +1,51 @@
-# Sends data (microservice)
-
 from flask import Flask, request, jsonify
+import json
 
 app = Flask(__name__)
 
-# Sample database of activities
-activities = [
-    {"name": "Ice Skating at Holiday Park", "description": "Enjoy outdoor skating with holiday decorations.", "price": 15, "distance": 2.5, "type": "outdoor", "location": "New York"},
-    {"name": "Coffee Tasting Tour", "description": "Explore local coffee roasters and sample different blends.", "price": 25, "distance": 1.8, "type": "food & drink", "location": "Los Angeles"},
-    {"name": "Hiking Adventure", "description": "Scenic hiking trails for all levels.", "price": 0, "distance": 5.0, "type": "outdoor", "location": "Denver"},
-    {"name": "Local Brewery Tour", "description": "Discover the city's best local breweries and enjoy tastings.", "price": 30, "distance": 3.5, "type": "food & drink", "location": "Los Angeles"},
-    {"name": "Holiday Light Show", "description": "Experience a magical holiday light display.", "price": 10, "distance": 1.2, "type": "relaxation", "location": "New York"}
-]
+def load_activity_data():
+    """Load activity data from the JSON file."""
+    try:
+        with open('data/activities.json', 'r', encoding='utf-8') as file:
+            return json.load(file)['activities']
+    except Exception as e:
+        print(f"Error loading activity data: {e}")
+        return []
 
 @app.route('/recommendations', methods=['POST'])
 def get_recommendations():
+    """Filter activities based on user-selected filters."""
     data = request.json
-    location = data.get("location")
-    activity_type = data.get("activity_type")
-    budget = data.get("budget")
+    location = data.get('location', '').strip()
+    activity_type = data.get('activity_type', '').strip()
+    budget = data.get('budget', '').strip()
 
-    # Filter activities based on user input
-    filtered_activities = [activity for activity in activities
-                            if (location.lower() in activity["location"].lower()) and
-                               (activity_type.lower() in activity["type"].lower()) and
-                               (activity["price"] <= int(budget.replace('$', '').split('-')[0]))]
+    try:
+        activities = load_activity_data()
+        filtered_activities = []
 
-    return jsonify(filtered_activities)
+        for activity in activities:
+            if location and activity['location'].lower() != location.lower():
+                continue
+            if activity_type and activity['type'].lower() != activity_type.lower():
+                continue
+            if budget:
+                try:
+                    budget_value = int(budget.replace('$', ''))
+                    if activity['price'] > budget_value:
+                        continue
+                except ValueError:
+                    print("Invalid budget format")
+
+            filtered_activities.append(activity)
+
+        if not filtered_activities:
+            return jsonify({"message": "No activities match your filters.", "activities": []}), 200
+
+        return jsonify(filtered_activities), 200
+    except Exception as e:
+        print(f"Error processing request: {e}")
+        return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=6767)
+    app.run(host='0.0.0.0', port=6767, debug=True)
