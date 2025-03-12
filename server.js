@@ -79,43 +79,7 @@ app.get('/home', (req, res) => {
     res.render('home', { title: 'Home', user: req.session.user });
 });
 
-// 🌍 Route: Explore Page (Fetch recommendations from microservice)
-app.get('/explore', async (req, res) => {
-    if (!req.session.user) return res.redirect('/');
 
-    const userData = loadUserData();
-    const { city, interests } = userData;
-    const activities = loadActivityData();
-
-    try {
-        const response = await axios.post('http://127.0.0.1:6767/recommendations', {
-            location: city,
-            activity_type: interests.join(", "), 
-            budget: "$50"
-        });
-
-        const recommendedActivities = response.data;
-
-        // Sort recommended activities to the top
-        const sortedActivities = [
-            ...recommendedActivities, 
-            ...activities.filter(act => !recommendedActivities.some(r => r.name === act.name))
-        ];
-
-        res.render('explore', { 
-            title: 'Explore Activities', 
-            user: req.session.user, 
-            activities: sortedActivities 
-        });
-    } catch (error) {
-        console.error("❌ Error fetching recommendations:", error.message);
-        res.render('explore', { 
-            title: 'Explore Activities', 
-            user: req.session.user, 
-            activities 
-        });
-    }
-});
 
 // 📢 Send Notification (Calls Notification Microservice)
 app.post('/api/notify', async (req, res) => {

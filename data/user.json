@@ -1,13 +1,13 @@
 {
   "username": "drake",
   "password": "vickers",
-  "securityQuestion": "middleName",
-  "securityAnswer": "riley",
-  "city": "San Diego",
+  "securityQuestion": "firstPet",
+  "securityAnswer": "milo",
+  "city": "Seattle",
   "interests": [
-    "indoor"
+    "tourist attraction"
   ],
   "bookmarkedActivities": [
-    "santa-monica-pier"
+    "hollywood-walk-of-fame"
   ]
 }
