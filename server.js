@@ -217,19 +217,18 @@ app.get('/logout', (req, res) => {
 });
 
 app.post("/api/filter-activities", async (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: "User not authenticated" });
-
     try {
         const { location, activityType, budget } = req.body;
-        const response = await axios.post("http://127.0.0.1:6767/recommendations", {
+
+        const response = await axios.post("http://127.0.0.1:6767/filter-activities", {
             location,
             activity_type: activityType,
             budget
         });
 
-        res.json({ success: true, activities: response.data });
+        res.json(response.data);
     } catch (error) {
-        console.error("Error fetching filtered activities:", error.message);
+        console.error("❌ Error fetching filtered activities:", error.message);
         res.status(500).json({ error: "Failed to fetch activities" });
     }
 });
