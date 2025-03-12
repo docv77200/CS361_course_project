@@ -3,11 +3,9 @@
   "password": "vickers",
   "securityQuestion": "firstPet",
   "securityAnswer": "milo",
-  "city": "Seattle",
+  "city": "Los Angeles",
   "interests": [
-    "tourist attraction"
+    "outdoor"
   ],
-  "bookmarkedActivities": [
-    "hollywood-walk-of-fame"
-  ]
+  "bookmarkedActivities": []
 }
