@@ -29,26 +29,28 @@ def get_recommendations():
         score = 0
         activity_location = activity["location"].strip().lower()
         activity_type = activity["type"].strip().lower()
+        activity_description = activity["description"].strip().lower()
 
         # Debugging: Print each activity's details
         print(f"🔍 Checking Activity: {activity['name']} | Location: {activity_location} | Type: {activity_type}")
 
-        # Location match (Higher weight)
+        # ✅ 1️⃣ Always Prioritize Location Matches
         if activity_location == user_location:
-            score += 2  
+            score += 3  # Strong priority for same-city activities
         elif user_location in activity_location:
-            score += 1  
+            score += 2  # Partial match
 
-        # Interest match (Lower weight)
-        if any(interest in activity_type for interest in user_interests):
-            score += 1  
+        # ✅ 2️⃣ Then Check Interest Matches
+        if any(interest in activity_type for interest in user_interests) or \
+           any(interest in activity_description for interest in user_interests):
+            score += 1  # Interest match boosts score but is secondary to location
 
-        # Append activity with score (even if score is 0)
+        # Append activity with score
         scored_activities.append((score, activity))
 
-    # Sort activities by highest score but return all
+    # ✅ 3️⃣ Sort activities by highest score (location-based sorting is guaranteed)
     scored_activities.sort(reverse=True, key=lambda x: x[0])
-    sorted_activities = [activity for _, activity in scored_activities]
+    sorted_activities = [activity for score, activity in scored_activities]  # Include all scored activities
 
     print(f"✅ Returning {len(sorted_activities)} Activities (Sorted).")
 
