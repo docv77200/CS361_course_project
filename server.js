@@ -185,33 +185,52 @@ app.get('/explore', async (req, res) => {
 
     const userData = loadUserData();
     const { city, interests } = userData;
-    const activities = loadActivityData();
+
+    // Read filters from the query string
+    const userLocation = req.query.location || "";
+    const userActivityType = req.query.activity_type || "";
+    const userBudget = req.query.budget || "";
+
+    console.log("📩 Sending Filter Request to Microservice:", { 
+        location: userLocation, 
+        activity_type: userActivityType, 
+        budget: userBudget 
+    });
 
     try {
-        console.log("📩 Sending Recommendation Request:", { location: city, interests });
+        let filteredActivities = [];
 
-        const response = await axios.post('http://127.0.0.1:6767/recommendations', {
-            location: city,
-            activity_type: interests.join(", ")
-        });
+        if (!userLocation && !userActivityType && !userBudget) {
+            // ✅ If no filters are applied, load all activities directly
+            filteredActivities = loadActivityData();
+            console.log("✅ No filters applied, returning all activities.");
+        } else {
+            // ✅ If filters are applied, send the request to the microservice
+            const response = await axios.post('http://127.0.0.1:6767/recommendations', {
+                location: userLocation,
+                activity_type: userActivityType,
+                budget: userBudget
+            });
 
-        const sortedActivities = response.data;
-        console.log("✅ Sorted Activities Received:", sortedActivities.length);
+            filteredActivities = response.data;
+            console.log(`✅ Filtered Activities Received: ${filteredActivities.length}`);
+        }
 
         res.render('explore', { 
             title: 'Explore Activities', 
             user: req.session.user, 
-            activities: sortedActivities 
+            activities: filteredActivities
         });
     } catch (error) {
         console.error("❌ Error fetching recommendations:", error.message);
         res.render('explore', { 
             title: 'Explore Activities', 
             user: req.session.user, 
-            activities 
+            activities: []
         });
     }
 });
+
 
 
 app.post('/api/bookmark', async (req, res) => {
