@@ -28,14 +28,12 @@ def filter_activities():
         matches_type = not activity_type or activity_type == "none" or activity_type == activity["type"].lower()
         
         # Convert budget to int and match with activity price
-        if budget and budget != "None":
-            try:
-                budget_value = int(budget.replace("$", ""))
-                matches_budget = activity["price"] <= budget_value
-            except ValueError:
-                return jsonify({"error": "Invalid budget format"}), 400
-        else:
-            matches_budget = True  # Ignore budget filter if not set
+        try:
+            budget_value = int(budget) if budget and budget.isdigit() else None
+        except ValueError:
+            budget_value = None  # If budget is invalid, ignore it
+
+        matches_budget = not budget_value or activity["price"] <= budget_value
 
         if matches_location and matches_type and matches_budget:
             filtered_activities.append(activity)
