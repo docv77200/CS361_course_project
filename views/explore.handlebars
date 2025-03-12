@@ -12,35 +12,6 @@
     </div>
 </div>
 
-<!-- Filter Form -->
-<form id="filter-form">
-    <label for="location">Location:</label>
-    <input type="text" id="location" name="location" placeholder="Enter city">
-
-    <label for="activity-type">Activity Type:</label>
-    <select id="activity-type" name="activityType">
-        <option value="">All Types</option>  <!-- Changed "None" to an empty value -->
-        <option value="outdoor">Outdoor</option>
-        <option value="food & drink">Food & Drink</option>
-        <option value="relaxation">Relaxation</option>
-        <option value="tourist attraction">Tourist Attraction</option>
-    </select>
-
-    <label for="budget">Budget:</label>
-    <select id="budget" name="budget">
-        <option value="">All Budgets</option>  <!-- Changed "None" to an empty value -->
-        <option value="0">Free</option>
-        <option value="10">$10</option>
-        <option value="20">$20</option>
-        <option value="30">$30</option>
-    </select>
-
-    <div class="filter-buttons">
-        <button type="submit">Apply Filters</button>
-        <button type="button" id="reset-filters">Reset Filters</button>
-    </div>
-</form>
-
 <!-- Activities Display -->
 <div id="activity-grid">
     {{#each activities}}
@@ -75,5 +46,4 @@
 </div>
 
 <script src="/js/bookmarks.js"></script>
-<script src="/js/filters.js"></script>
 <script src="/js/reviews.js"></script>

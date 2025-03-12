@@ -216,24 +216,39 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-app.post("/api/filter-activities", async (req, res) => {
+app.get('/explore', async (req, res) => {
+    if (!req.session.user) return res.redirect('/');
+
+    const userData = loadUserData();
+    const { city, interests } = userData;
+    const activities = loadActivityData();
+
     try {
-        const { location, activityType, budget } = req.body;
-
-        console.log("📩 Forwarding filter request:", { location, activityType, budget });
-
-        const response = await axios.post("http://127.0.0.1:6767/filter-activities", {
-            location,
-            activity_type: activityType,
-            budget
+        const response = await axios.post('http://127.0.0.1:6767/recommendations', {
+            location: city,
+            activity_type: interests.join(", ")  // Convert list to string
         });
 
-        console.log("✅ Filtered Activities Received:", response.data.activities);
+        const recommendedActivities = response.data;
 
-        res.json(response.data);
+        // Merge recommended activities at the top, keeping others below
+        const sortedActivities = [
+            ...recommendedActivities, 
+            ...activities.filter(act => !recommendedActivities.some(r => r.name === act.name))
+        ];
+
+        res.render('explore', { 
+            title: 'Explore Activities', 
+            user: req.session.user, 
+            activities: sortedActivities 
+        });
     } catch (error) {
-        console.error("❌ Error fetching filtered activities:", error.message);
-        res.status(500).json({ error: "Failed to fetch activities" });
+        console.error("❌ Error fetching recommendations:", error.message);
+        res.render('explore', { 
+            title: 'Explore Activities', 
+            user: req.session.user, 
+            activities 
+        });
     }
 });
 
