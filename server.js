@@ -183,16 +183,8 @@ app.get('/logout', (req, res) => {
 app.get('/explore', async (req, res) => {
     if (!req.session.user) return res.redirect('/');
 
-    const userData = loadUserData();  // Load user data from user.json
-    const username = req.session.user.username; 
-    const user = username ? userData : null;
-
-    if (!user) {
-        console.error("❌ No user data found.");
-        return res.render('explore', { title: 'Explore Activities', user: req.session.user, activities: [] });
-    }
-
-    const { city, interests } = user;
+    const userData = loadUserData();
+    const { city, interests } = userData;
     const activities = loadActivityData();
 
     try {
@@ -203,14 +195,8 @@ app.get('/explore', async (req, res) => {
             activity_type: interests.join(", ")
         });
 
-        const recommendedActivities = response.data;
-        console.log("✅ Recommended Activities Received:", recommendedActivities);
-
-        // Merge recommended activities at the top, keeping others below
-        const sortedActivities = [
-            ...recommendedActivities, 
-            ...activities.filter(act => !recommendedActivities.some(r => r.id === act.id))
-        ];
+        const sortedActivities = response.data;
+        console.log("✅ Sorted Activities Received:", sortedActivities.length);
 
         res.render('explore', { 
             title: 'Explore Activities', 
