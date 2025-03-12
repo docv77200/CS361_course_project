@@ -220,11 +220,15 @@ app.post("/api/filter-activities", async (req, res) => {
     try {
         const { location, activityType, budget } = req.body;
 
+        console.log("📩 Forwarding filter request:", { location, activityType, budget });
+
         const response = await axios.post("http://127.0.0.1:6767/filter-activities", {
             location,
             activity_type: activityType,
             budget
         });
+
+        console.log("✅ Filtered Activities Received:", response.data.activities);
 
         res.json(response.data);
     } catch (error) {
@@ -232,7 +236,6 @@ app.post("/api/filter-activities", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch activities" });
     }
 });
-
 
 app.post('/api/bookmark', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });

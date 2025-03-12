@@ -15,30 +15,45 @@ def load_activities():
 
 @app.route("/filter-activities", methods=["POST"])
 def filter_activities():
-    data = request.json
-    location = data.get("location", "").strip().lower()
-    activity_type = data.get("activity_type", "").strip().lower()
-    budget = data.get("budget", "").strip()
+    try:
+        data = request.json
 
-    activities = load_activities()
-    filtered_activities = []
+        # Extract filters (handle missing values properly)
+        location = str(data.get("location", "")).strip().lower()
+        activity_type = str(data.get("activity_type", "")).strip().lower()
+        budget = str(data.get("budget", "")).strip()
 
-    for activity in activities:
-        matches_location = not location or location in activity["location"].lower()
-        matches_type = not activity_type or activity_type == "none" or activity_type == activity["type"].lower()
-        
-        # Convert budget to integer for comparison
-        try:
-            budget_value = int(budget) if budget.isdigit() else None
-        except ValueError:
-            budget_value = None  # If budget is invalid, ignore it
+        activities = load_activities()
+        filtered_activities = []
 
-        matches_budget = not budget_value or activity["price"] <= budget_value
+        for activity in activities:
+            # Convert activity data to lowercase for case-insensitive matching
+            activity_location = activity["location"].strip().lower()
+            activity_type_value = activity["type"].strip().lower()
+            activity_price = activity["price"]
 
-        if matches_location and matches_type and matches_budget:
-            filtered_activities.append(activity)
+            # Default to True so missing filters don't remove results
+            matches_location = True if not location else location in activity_location
+            matches_type = True if not activity_type or activity_type == "none" else activity_type == activity_type_value
 
-    return jsonify({"success": True, "activities": filtered_activities})
+            # Convert budget to int and apply filter if it's provided
+            try:
+                budget_value = int(budget) if budget.isdigit() else None
+            except ValueError:
+                budget_value = None  # If budget is invalid, ignore it
+
+            matches_budget = True if budget_value is None else activity_price <= budget_value
+
+            # If activity passes all applied filters, add it to results
+            if matches_location and matches_type and matches_budget:
+                filtered_activities.append(activity)
+
+        print(f"✅ Found {len(filtered_activities)} matching activities.")
+        return jsonify({"success": True, "activities": filtered_activities})
+
+    except Exception as e:
+        print(f"❌ Error in filter-activities: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=6767)
