@@ -148,13 +148,21 @@ app.get('/reset-password', (req, res) => {
 
 // 🔑 Reset Password (POST)
 app.post('/reset-password', (req, res) => {
-    const { username, newPassword } = req.body;
+    const { username, newPassword, confirmPassword } = req.body;
     let userData = loadUserData();
+
+    if (!username || !newPassword || !confirmPassword) {
+        return res.render('reset-password', { title: 'Reset Password', error: 'All fields are required.' });
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.render('reset-password', { title: 'Reset Password', error: 'Passwords do not match.' });
+    }
 
     if (userData.username === username) {
         userData.password = newPassword;
         saveUserData(userData);
-        return res.redirect('/');
+        return res.redirect('/'); // Redirects to sign-in page
     }
 
     res.render('reset-password', { title: 'Reset Password', error: 'Username not found.' });
