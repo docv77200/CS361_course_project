@@ -16,8 +16,11 @@ def load_activities():
 @app.route('/recommendations', methods=['POST'])
 def get_recommendations():
     data = request.json
+
     user_location = data.get("location", "").strip().lower()
     user_interests = set(map(str.lower, data.get("activity_type", "").split(", ")))
+
+    print(f"📩 Received Recommendation Request: Location = {user_location}, Interests = {user_interests}")
 
     activities = load_activities()
     scored_activities = []
@@ -42,9 +45,9 @@ def get_recommendations():
 
     # Sort activities by highest score first
     scored_activities.sort(reverse=True, key=lambda x: x[0])
-
-    # Return sorted activity list
     sorted_activities = [activity for _, activity in scored_activities]
+
+    print(f"✅ Returning {len(sorted_activities)} Recommended Activities.")
 
     return jsonify(sorted_activities)
 

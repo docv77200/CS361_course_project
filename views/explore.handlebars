@@ -14,35 +14,39 @@
 
 <!-- Activities Display -->
 <div id="activity-grid">
-    {{#each activities}}
-        <div class="activity-card" data-id="{{this.id}}">
-            <h2>{{this.name}}</h2>
-            <p>{{this.description}}</p>
-            <p>Price: ${{this.price}}</p>
-            <p>Distance: {{this.distance}} miles</p>
-            <p>Type: {{this.type}}</p>
-            <p>Time: {{this.time}}</p>
-            <p>Date: {{this.date}}</p>
-            <p>Location: {{this.location}}</p>
+    {{#if activities.length}}
+        {{#each activities}}
+            <div class="activity-card" data-id="{{this.id}}">
+                <h2>{{this.name}}</h2>
+                <p>{{this.description}}</p>
+                <p>Price: ${{this.price}}</p>
+                <p>Distance: {{this.distance}} miles</p>
+                <p>Type: {{this.type}}</p>
+                <p>Time: {{this.time}}</p>
+                <p>Date: {{this.date}}</p>
+                <p>Location: {{this.location}}</p>
 
-            <!-- Star Rating System -->
-            <div class="star-rating" data-id="{{this.id}}">
-                <span class="star" data-value="1">&#9733;</span>
-                <span class="star" data-value="2">&#9733;</span>
-                <span class="star" data-value="3">&#9733;</span>
-                <span class="star" data-value="4">&#9733;</span>
-                <span class="star" data-value="5">&#9733;</span>
+                <!-- Star Rating System -->
+                <div class="star-rating" data-id="{{this.id}}">
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                </div>
+
+                <!-- Average Rating Display -->
+                <p class="average-rating" id="avg-rating-{{this.id}}">Loading...</p>
+
+                <!-- Bookmark Button -->
+                <button class="bookmark-btn" data-id="{{this.id}}">
+                    {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
+                </button>
             </div>
-
-            <!-- Average Rating Display -->
-            <p class="average-rating" id="avg-rating-{{this.id}}">Loading...</p>
-
-            <!-- Bookmark Button -->
-            <button class="bookmark-btn" data-id="{{this.id}}">
-                {{#if ../user.bookmarkedActivities.[this.id]}}Remove Bookmark{{else}}Bookmark{{/if}}
-            </button>
-        </div>
-    {{/each}}
+        {{/each}}
+    {{else}}
+        <p>No recommended activities available.</p>
+    {{/if}}
 </div>
 
 <script src="/js/bookmarks.js"></script>

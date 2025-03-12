@@ -183,22 +183,33 @@ app.get('/logout', (req, res) => {
 app.get('/explore', async (req, res) => {
     if (!req.session.user) return res.redirect('/');
 
-    const userData = loadUserData();
-    const { city, interests } = userData;
+    const userData = loadUserData();  // Load user data from user.json
+    const username = req.session.user.username; 
+    const user = username ? userData : null;
+
+    if (!user) {
+        console.error("❌ No user data found.");
+        return res.render('explore', { title: 'Explore Activities', user: req.session.user, activities: [] });
+    }
+
+    const { city, interests } = user;
     const activities = loadActivityData();
 
     try {
+        console.log("📩 Sending Recommendation Request:", { location: city, interests });
+
         const response = await axios.post('http://127.0.0.1:6767/recommendations', {
             location: city,
-            activity_type: interests.join(", ")  // Convert list to string
+            activity_type: interests.join(", ")
         });
 
         const recommendedActivities = response.data;
+        console.log("✅ Recommended Activities Received:", recommendedActivities);
 
         // Merge recommended activities at the top, keeping others below
         const sortedActivities = [
             ...recommendedActivities, 
-            ...activities.filter(act => !recommendedActivities.some(r => r.name === act.name))
+            ...activities.filter(act => !recommendedActivities.some(r => r.id === act.id))
         ];
 
         res.render('explore', { 
@@ -215,6 +226,7 @@ app.get('/explore', async (req, res) => {
         });
     }
 });
+
 
 app.post('/api/bookmark', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'User not authenticated' });
